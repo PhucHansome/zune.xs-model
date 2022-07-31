@@ -1,0 +1,100 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="slideshow">
+    <section id="slideshow" class="slider no-pad">
+        <div class="tp-banner-container">
+            <div class="tp-banner" >
+                <ul class="list-unstyled">
+                    <li style="cursor: pointer"  data-transition="fade" data-slotamount="7" data-masterspeed="1000" data-thumb="https://zunezx.com/upload/image/cache/data/banner/Tee/1200A760-0D40-4AE9-B650-2D3CFA10DAD7-160-crop-1600-650.jpeg">
+                        <img src="https://symbols.vn/wp-content/uploads/2022/01/Hinh-Anime-Itachi-dep-doc-la.jpg" alt="Banner"  title="Banner" data-lazyload="https://symbols.vn/wp-content/uploads/2022/01/Hinh-Anime-Itachi-dep-doc-la.jpg" data-bgposition="left top" data-bgfit="cover" data-bgrepeat="no-repeat">
+                    </li>
+                    <li style="cursor: pointer" data-transition="fade" data-slotamount="7" data-masterspeed="1000" data-thumb="javascript: void(0);">
+                        <img src="/assets/image/anh-one-piece-3d-dep-nhat-13.jpeg" alt="Banner"  title="Banner" data-lazyload="/assets/image/anh-one-piece-3d-dep-nhat-13.jpeg" data-bgposition="left top" data-bgfit="cover" data-bgrepeat="no-repeat">
+                    </li>
+                    <li style="cursor: pointer"  data-transition="fade" data-slotamount="7" data-masterspeed="1000" data-thumb="https://zunezx.com/upload/image/cache/data/banner/LOTUS-RELEASE-BANNERWEB-568-crop-1600-650.jpg">
+                        <img src="https://tophinhanhdep.com/wp-content/uploads/2021/10/Dragon-Ball-Wallpapers.jpg" alt="Banner"  title="Banner" data-lazyload="https://tophinhanhdep.com/wp-content/uploads/2021/10/Dragon-Ball-Wallpapers.jpg" data-bgposition="left top" data-bgfit="cover" data-bgrepeat="no-repeat">
+                    </li>
+                    <li style="cursor: pointer"   data-transition="fade" data-slotamount="7" data-masterspeed="1000" >
+                        <img src="https://recmiennam.com/wp-content/uploads/2018/07/hinh-nen-fairy-tail-11.jpg" alt="Banner"  title="Banner"  data-bgposition="left top" data-bgfit="cover" data-bgrepeat="no-repeat">
+                    </li>
+                    <li style="cursor: pointer"  data-transition="fade" data-slotamount="7" data-masterspeed="1000" >
+                        <img src="https://st.quantrimang.com/photos/image/2019/04/24/Naruto-Wallpaper-24.jpg" alt="Banner"  title="Banner" data-lazyload="https://st.quantrimang.com/photos/image/2019/04/24/Naruto-Wallpaper-24.jpg" data-bgposition="left top" data-bgfit="cover" data-bgrepeat="no-repeat">
+                    </li>
+                    <li style="cursor: pointer"  data-transition="fade" data-slotamount="7" data-masterspeed="1000" >
+                        <img src="https://lh3.googleusercontent.com/-oe3dA2iaY4E/WOuHGlqF93I/AAAAAAAAAZU/wQCvIsov0O8/s0/58eb871212142.jpg" alt="Banner"  title="Banner" data-lazyload="https://lh3.googleusercontent.com/-oe3dA2iaY4E/WOuHGlqF93I/AAAAAAAAAZU/wQCvIsov0O8/s0/58eb871212142.jpg" data-bgposition="left top" data-bgfit="cover" data-bgrepeat="no-repeat">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script type="text/javascript">
+            jQuery('.tp-banner').show().revolution({
+                dottedOverlay: 'none',
+                delay: 3000,
+                startwidth: 1600,
+                startheight: 650,
+
+                hideThumbs: 200,
+                thumbWidth: 50,
+                thumbHeight: 40,
+                thumbAmount: 2,
+
+                navigationType: 'bullet',
+                navigationArrows: 'solo',
+                navigationStyle: 'round',
+
+                touchenabled: 'on',
+                onHoverStop: 'off',
+
+                swipe_velocity: 0.7,
+                swipe_min_touches: 1,
+                swipe_max_touches: 1,
+                drag_block_vertical: false,
+
+                spinner: 'none',
+                keyboardNavigation: 'off',
+
+                navigationHAlign: 'center',
+                navigationVAlign: 'bottom',
+                navigationHOffset: 0,
+                navigationVOffset: 20,
+
+                soloArrowLeftHalign: 'left',
+                soloArrowLeftValign: 'center',
+                soloArrowLeftHOffset: 20,
+                soloArrowLeftVOffset: 0,
+
+                soloArrowRightHalign: 'right',
+                soloArrowRightValign: 'center',
+                soloArrowRightHOffset: 20,
+                soloArrowRightVOffset: 0,
+
+                shadow: 0,
+                fullWidth: 'on',
+                fullScreen: 'off',
+
+                stopLoop: 'off',
+                stopAfterLoops: -1,
+                stopAtSlide: -1,
+
+                shuffle: 'off',
+
+                autoHeight: 'off',
+                forceFullWidth: 'off',
+                fullScreenAlignForce: 'off',
+                minFullScreenHeight: 0,
+                hideNavDelayOnMobile: 1500,
+
+                hideThumbsOnMobile: 'off',
+                hideBulletsOnMobile: 'off',
+                hideArrowsOnMobile: 'off',
+                hideThumbsUnderResolution: 0,
+
+                hideSliderAtLimit: 0,
+                hideCaptionAtLimit: 0,
+                hideAllCaptionAtLilmit: 0,
+                startWithSlide: 0,
+                fullScreenOffsetContainer: ''
+            });
+        </script>
+    </section>
+</th:block>

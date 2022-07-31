@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <th:block th:replace="/layout/header :: header"/>
+    <title>Dashboard | Uplon - Responsive Bootstrap 4 Admin Dashboard</title>
+
+</head>
+
+<body>
+
+<!-- Begin page -->
+<div id="wrapper">
+
+
+    <!-- Topbar Start -->
+    <th:block th:replace="/layout/navbar/navbar :: navbar"/>
+
+
+    <!-- ========== Left Sidebar Start ========== -->
+    <th:block th:replace="/layout/left-side-bar :: left-side-menu"/>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="content-page">
+        <div class="content">
+
+            <!-- Start Content-->
+            <div class="container-fluid">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Uplon</a></li>
+                                    <li class="breadcrumb-item active">User</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">User</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-8 float-lg-left">
+                        <h2>List User</h2>
+                    </div>
+                    <div class="col-4 float-lg-right">
+                        <button type="button" style="margin-bottom: 10px" id="modalAdd"
+                                class="btn btn-outline-primary float-right  modalAdd">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            Create User
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table id="tableListUsers" class="table table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th></th>
+                                <th>#</th>
+                                <th>EMAIL</th>
+                                <th>ROLE</th>
+                                <th colspan="2">ACTION</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- end container-fluid -->
+
+        </div> <!-- end content -->
+
+
+        <!-- Footer Start -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        2016 - 2019 &copy; Uplon theme by <a href="">Coderthemes</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end Footer -->
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+
+</div>
+
+<th:block th:replace="/layout/script/script :: script"/>
+
+<th:block th:replace="/user/modal-change-password :: modal-change-password"/>
+
+<th:block th:replace="/user/modal-create-information :: modal-create-information"/>
+
+<script>
+
+    let user = new User();
+
+    let role = new Role();
+
+    let userId = null;
+
+    function LoadingAllUser() {
+        $.ajax({
+            "type": "GET",
+            "url": "http://localhost:8080/api/user"
+        }).done((data) => {
+            console.log(data)
+            $.each(data, (i, item) => {
+                console.log(item.role.code);
+                let str =
+                    `
+                     <tr id="tr_${item.id}">
+                        <td></td>
+                        <td>${item.id}</td>
+                        <td>${item.username}</td>
+                        <td><b>${item.role.code}</b></td>
+                        <td><button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active-block">Active</button>
+                        <button type="button" data-id="${item.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button></td>
+                    </tr>
+                    `
+                $('#tableListUsers tbody').prepend(str);
+                handleShowCreateModal();
+                handleShowUpdatePassWord();
+                handleActive()
+            })
+        }).fail(() => {
+            App.SweetAlert.showErrorAlert("Customer Errors")
+        })
+    }
+
+    function getUserById(userId) {
+        return $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            "type": "GET",
+            url: "http://localhost:8080/api/user/" + userId
+        }).done((data) => {
+            user = data;
+        }).fail((jqXHR) => {
+            App.SweetAlert.showErrorAlert("fail id customer");
+            console.log(jqXHR);
+        })
+    }
+
+    $("#btnCreate").on("click", () => {
+        let username = $("#EmailCre").val();
+        let password = $("#password").val();
+        let passwordCon = $("#passwordCon").val();
+        let roleCode = $("#role :selected").text();
+        let roleId = $("#role").val();
+
+        if (password !== passwordCon) {
+            App.SweetAlert.showErrorAlert("Mật khẩu không khớp");
+            return
+        }
+
+        role.id = roleId;
+        role.code = roleCode;
+
+        delete user.id
+        user.username = username;
+        user.password = password;
+        user.role = role
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "POST",
+            url: "http://localhost:8080/api/auth/register",
+            data: JSON.stringify(user)
+        }).done((data) => {
+            $("#modalCreateUser").modal('hide');
+            App.SweetAlert.showSuccessAlert("Đăng ký thành công!!");
+
+            let str =
+                `
+                     <tr id="tr_${data.id}">
+                        <td></td>
+                        <td>${data.id}</td>
+                        <td>${data.username}</td>
+                        <td><b>${data.role.code}</b></td>
+                        <td>
+                            <button data-id="${data.id}" class="btn btn-outline-success"  id="btn-active-block">Active</button>
+                            <button type="button" data-id="${data.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    `
+            $('#tableListUsers tbody').prepend(str);
+            handleShowCreateModal();
+            handleShowUpdatePassWord()
+            handleblock()
+            handleActive()
+
+        }).fail((jqXHR) => {
+            $('#modalCreateUser .alert-danger ').html('').removeClass('hide').addClass('show');
+            if (jqXHR.responseJSON.message) {
+                let msg = jqXHR.responseJSON.message;
+                let str = `<label for="message" id="message-error" class="error">${msg}</label>`
+                $('#modalCreateUser .alert-danger').append(str)
+            } else if (jqXHR.responseJSON) {
+                let str = '';
+                $.each(jqXHR.responseJSON, (key, item) => {
+                    str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                    $('#modalCreateUser .alert-danger').append(str);
+                })
+            }
+        })
+    })
+
+    $(".btnUpdatePassword").on("click", () => {
+        let password = $("#passwordUp").val();
+        let passwordCon = $("#passwordCon").val();
+
+        console.log(password);
+
+        // if(password !== passwordCon){
+        //     App.SweetAlert.showErrorAlert("Mật khẩu phải giống nhau")
+        //     return
+        // }
+        if (password.length === 0 && passwordCon.length === 0) {
+            App.SweetAlert.showErrorAlert("Mật khẩu không được để trống")
+            return
+        }
+
+        user.id = $("#idUser").val();
+        user.password = password;
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "PUT",
+            url: "http://localhost:8080/api/user/update",
+            data: JSON.stringify(user)
+        }).done(() => {
+            App.SweetAlert.showSuccessAlert("Bạn đã đổi mật khẩu thành công!!")
+        }).fail((jqXHR) => {
+            $('#modalUpdatePassword .alert-danger ').html('').removeClass('hide').addClass('show');
+            if (jqXHR.responseJSON.message) {
+                let msg = jqXHR.responseJSON.message;
+                let str = `<label for="message" id="message-error" class="error">${msg}</label>`
+                $('#modalUpdatePassword .alert-danger').append(str)
+            } else if (jqXHR.responseJSON) {
+                let str = '';
+                $.each(jqXHR.responseJSON, (key, item) => {
+                    str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                    $('#modalUpdatePassword .alert-danger').append(str);
+                })
+            }
+        })
+    })
+
+    function handleShowCreateModal() {
+        $("#modalAdd").on("click", () => {
+            $("#modalCreateUser").modal('show');
+        })
+    }
+
+    function handleShowUpdatePassWord() {
+        $("#btnChangePassWord").on("click", function () {
+            let id = $(this).data("id");
+            getUserById(id).then(() => {
+                $("#modalUpdatePassword").modal("show");
+                $("#idUser").val(user.id);
+            })
+        })
+    }
+
+    function handleActive() {
+        $("#btn-active-block").on("click", function () {
+            let id = $(this).data("id");
+            getUserById(id).then(() => {
+
+                let currentRow = $('#tr_' + user.id);
+                let updateRow = `
+
+                     <tr id="tr_${user.id}">
+                        <td></td>
+                        <td>${user.id}</td>
+                        <td>${user.username}</td>
+                        <td><b>${user.role.code}</b></td>
+                        <td><button class="btn btn-outline-danger" data-id="${user.id}" id="btn-block">block</button>
+                        <td></td>
+                    </tr>
+            `
+                App.IziToast.showSuccessAlert("Tài khoản đã bị block");
+                currentRow.replaceWith(updateRow);
+                handleShowUpdatePassWord()
+                handleShowCreateModal()
+                handleblock()
+            })
+        })
+    }
+
+    function handleblock() {
+        $("#btn-block").on("click", function () {
+            let id = $(this).data("id");
+            getUserById(id).then(() => {
+
+                let currentRow1 = $('#tr_' + user.id);
+                let updateRow1 = `
+
+                     <tr id="tr_${user.id}">
+                        <td></td>
+                        <td>${user.id}</td>
+                        <td>${user.username}</td>
+                        <td><b>${user.role.code}</b></td>
+                        <td>
+                            <button data-id="${user.id}" class="btn btn-outline-success"   id="btn-active-block">Active</button>
+                            <button type="button" data-id="${user.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+            `
+                App.IziToast.showSuccessAlert("Tài khoản đã mở khóa");
+                currentRow1.replaceWith(updateRow1);
+                handleShowUpdatePassWord()
+                handleShowCreateModal()
+                handleActive()
+            })
+        })
+    }
+
+    handleShowUpdatePassWord()
+    handleShowCreateModal()
+    LoadingAllUser();
+    handleActive()
+</script>
+
+</body>
+</html>

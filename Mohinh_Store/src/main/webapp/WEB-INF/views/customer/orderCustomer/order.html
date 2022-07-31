@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]>
+<html dir="ltr" lang="vi" class="ie8"><![endif]-->
+<!--[if IE 9 ]>
+<html dir="ltr" lang="vi" class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html dir="ltr" lang="vi">
+<!--<![endif]-->
+<th:block th:replace="/customer/layout_customer/header_customer :: header-first"/>
+<style>
+
+</style>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PLJFBFT"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+<th:block th:replace="/customer/layout_customer/header-second :: header-second"/>
+<div class="box-notices">
+    <div class="marquee-wrap">
+        <a href="https://zunezx.com/huong-dan-dat-hang-i14.html" title="Hướng dẫn mua hàng ---&gt; Click xem thêm"><i
+                class="fa fa-angle-right"></i>Hướng dẫn mua hàng ---&gt; Click xem thêm</a>
+    </div>
+    <script>
+        $('.marquee-wrap').marquee({
+            speed: 50,
+            gap: 50,
+            delayBeforeStart: 0,
+            direction: 'left',
+            duplicated: true,
+            pauseOnHover: true
+        });
+    </script>
+</div>
+<th:block th:replace="/customer/layout_customer/slide-show :: slideshow"/>
+
+<div class="has-bg__container">
+    <div class="container">
+        <div class="row">
+            <div class="has-bg__container">
+                <div id="content">
+                    <h1 class="heading-title hidden">Giỏ Hàng</h1>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12">
+                                <div class="cart-product cart-border">
+                                    <h2><span>Giỏ Hàng</span></h2>
+                                    <p>Giỏ hàng của bạn có những sản phẩm sau</p>
+                                    <form action="https://zunezx.com/index.php?route=checkout/cart/edit" method="post"
+                                          enctype="multipart/form-data">
+                                        <div class="table-responsive">
+                                            <table class="table OrderItem">
+                                                <thead>
+                                                <tr>
+                                                    <td class="text-center">Hình ảnh</td>
+                                                    <td class="text-left">Tên sản phẩm</td>
+                                                    <td class="text-left">Số lượng</td>
+                                                    <td class="text-right">Đơn Giá</td>
+                                                    <td class="text-right">Tổng cộng</td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12">
+                                <div class="cart-product cart-border">
+                                    <h2><span>Thông tin khách hàng</span></h2>
+                                    <form id="frmCreateCustomer" method="post">
+                                        <fieldset class="row g-3" style="padding-bottom: 20px">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Họ và tên:</label>
+                                                <input type="text" class="form-control" id="fullNameCustomer"
+                                                       name="fullNameCustomer">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Ngày sinh</label>
+                                                <input type="date" class="form-control" id="bOdCustomer"
+                                                       name="bOdCustomer">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Số điện thoại</label>
+                                                <input type="text" class="form-control" id="phoneCustomer"
+                                                       name="phoneCustomer">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Địa chỉ</label>
+                                                <input type="text" class="form-control" id="addressCustomer"
+                                                       name="addressCustomer">
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                    <div class="buttons clearfix">
+                                        <br>
+                                        <div class="pull-right">
+                                            <button id="btn-buy"
+                                                    class="btn btn-primary btn-buy">Thanh toán
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="font-size: 0" class="row" th:object="${user}">
+        <span id="userNameLogin" th:text="${user}"></span>
+    </div>
+</div>
+
+
+<th:block th:replace="/customer/layout_customer/footer-customer :: footer"/>
+
+<script src="/assets/js/jquery-3.6.0.min.js"></script>
+<script src="/assets/js/jquery.validate-1.19.3.min.js"></script>
+<script src="/assets/js/iziToast.min.js"></script>
+<script src="/assets/js/sweetalert2.min.js"></script>
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/font-awesome/v4.7.0/js/all.min.js"></script>
+
+<script>
+    let orderItem = new OrderItem();
+
+    let customerInfo = new CustomerInfo();
+
+    let order = new Order();
+
+    var usernameLogin = $("#userNameLogin").text();
+
+    function drawAllItemsCustomerOrder() {
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "GET",
+            url: "http://localhost:8080/api/orderitems/" + usernameLogin,
+        }).done((data) => {
+            $.each(data, (i, item) => {
+                let str = `
+                <tr id="tr_${item.id}">
+                    <td class="text-center align-middle">
+                    <input type="hidden" id="idOrderItem" value="${item.id}">
+                        <a href="#"><img
+                                width="80px"
+                                 height="100px" src="${item.product.image}"
+                                alt=""
+                                title=""
+                                class="img-thumbnail"></a>
+                    </td>
+                    <td class="text-left align-middle">
+                        <a href="">${item.product.productName}</a>
+                        <br>
+                        <small>Mã hàng: ${item.product.productCode}</small>
+                    </td>
+                    <td class="text-left align-middle">
+                        <div class="input-group btn-block" style="max-width: 134px;">
+                            <input style="width: 60px;" type="number" id="inputQuantity" max="10"
+                                   name="inputQuantity" value="${item.quantityOrdered}"
+                                   class="form-control inputQuantity">
+                            <span class="input-group-btn">
+                                    <button data-id="${item.id}" id="btn-update-total"  type="button" title="" class="btn btn-primary btn-update-total" >
+                                        <i class="fa-solid fa-arrows-rotate "></i>
+                                    </button>
+                                    <button type="button"
+                                              class="btn btn-danger btn-delete-cart"
+                                              data-id="${item.id}" id="btn-delete-cart"
+                                             ><i
+                                              class="fa fa-times-circle"></i></button>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="text-right align-middle" >${new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(item.product.priceProduct)}</td>
+                    <td class="text-right align-middle">${new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(item.grandTotal)}</td>
+                </tr>
+                `
+                $(".OrderItem tbody").append(str)
+                $("#btn-delete-cart").off();
+                $(".btn-update-total").off();
+                confirmDelete();
+                doUpdateTotalByButton();
+            });
+        }).fail(() => {
+            App.IziToast.showErrorAlert("giỏ hàng trống")
+        })
+    }
+
+    function getOrderItem() {
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "GET",
+            url: "http://localhost:8080/api/orderitems/" + usernameLogin,
+        }).done((data) => {
+            orderItem = data;
+        }).fail(() => {
+            App.SweetAlert.showErrorAlert("Không lấy được danh sách orderItem")
+        })
+    }
+
+    function getOrderItemsById(orderItemsId) {
+        return $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            "type": "GET",
+            url: "http://localhost:8080/api/orderitems/id/" + orderItemsId
+        }).done((data) => {
+            orderItem = data;
+        }).fail((jqXHR) => {
+            App.IziToast.showErrorAlert("Giỏ hàng trống");
+            console.log(jqXHR);
+        })
+    }
+
+    function getUserByUserName(userName) {
+        return $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            "type": "GET",
+            url: "http://localhost:8080/api/user/name/" + userName
+        }).done((data) => {
+            user = data;
+        }).fail((jqXHR) => {
+            App.SweetAlert.showErrorAlert("fail user customer");
+            console.log(jqXHR);
+        })
+    }
+
+    function getProductById(productId) {
+        return $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            "type": "GET",
+            url: "http://localhost:8080/api/product/" + productId
+        }).done((data) => {
+            product = data;
+            console.log(product);
+        }).fail((jqXHR) => {
+            App.SweetAlert.showErrorAlert("fail id customer");
+            console.log(jqXHR);
+        })
+    }
+
+    function confirmDelete() {
+        $(".btn-delete-cart").on("click", function () {
+            let Id = $(this).data("id");
+            Swal.fire({
+                title: 'Bạn có chắc muốn xóa sản phẩm này ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, deactive it!'
+            }).then(function (resuilt) {
+                    if (resuilt.isConfirmed) {
+                        doDelete(Id);
+                    }
+                }
+            )
+        })
+    }
+
+    function doDelete(orderItemsId) {
+        $.ajax({
+            type: "DELETE",
+            url: "http://localhost:8080/api/orderitems/delete/" + orderItemsId,
+        })
+            .done(() => {
+                $("#tr_" + orderItemsId).remove();
+                App.IziToast.showSuccessAlert("Xóa Sản Phẩm Khỏi giỏ hàng thành công");
+                doUpdateTotalByButton();
+            }).fail(() => {
+            App.SweetAlert.showErrorAlert("Xóa Sản Phẩm thất bại ");
+        })
+    }
+
+    function doUpdateTotalByButton() {
+        $(".btn-update-total").on("click", function () {
+            let id = $(this).data("id")
+            getOrderItemsById(id).then(() => {
+                orderItem.quantityOrdered = $("#inputQuantity").val();
+                $.ajax({
+                    headers: {
+                        "accept": "application/json",
+                        "content-type": "application/json"
+                    },
+                    type: "PUT",
+                    url: "http://localhost:8080/api/orderitems/update/",
+                    data: JSON.stringify(orderItem)
+                }).done((data) => {
+                    console.log(data);
+                    let currentRow = $('#tr_' + data.id);
+                    let updateRow = `
+                     <tr id="tr_${data.id}">
+                    <td class="text-center align-middle">
+                        <a href="#"><img
+                                width="80px"
+                                 height="100px" src="${data.product.image}"
+                                alt=""
+                                title=""
+                                class="img-thumbnail"></a>
+                    </td>
+                    <td class="text-left align-middle">
+                        <a href="">${data.product.productName}</a>
+                        <br>
+                        <small>Mã hàng: ${data.product.productCode}</small>
+                    </td>
+                    <td class="text-left align-middle">
+                        <div class="input-group btn-block" style="max-width: 134px;">
+                            <input style="width: 60px;" type="number" id="inputQuantity" max="10"
+                                   name="inputQuantity" value="${data.quantityOrdered}"
+                                   class="form-control inputQuantity">
+                            <span class="input-group-btn">
+                                    <button data-id="${data.id}" id="btn-update-total"  type="button" title="" class="btn btn-primary btn-update-total" >
+                                        <i class="fa-solid fa-arrows-rotate"></i>
+                                    </button>
+                                    <button type="button"
+                                              class="btn btn-danger btn-delete-cart"
+                                              data-id="${data.id}" id="btn-delete-cart"
+                                             ><i
+                                              class="fa fa-times-circle"></i></button>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="text-right align-middle" >${new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(data.product.priceProduct)}</td>
+                    <td class="text-right align-middle">${new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(data.grandTotal)}</td>
+                </tr>
+            `
+                    App.IziToast.showSuccessAlert("Cập nhật giá sản phẩm thành công");
+                    currentRow.replaceWith(updateRow);
+                    confirmDelete();
+                    doUpdateTotalByButton();
+
+                }).fail(() => {
+                    App.SweetAlert.showErrorAlert("update Giá sản phẩm thất bại!");
+                })
+            })
+        })
+    }
+
+    $("#btn-buy").on("click", () => {
+        delete customerInfo.id;
+        customerInfo.fullName = $("#fullNameCustomer").val();
+        customerInfo.phone = $("#phoneCustomer").val();
+        customerInfo.birthDate = $("#bOdCustomer").val();
+        customerInfo.address = $("#addressCustomer").val();
+
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "POST",
+            url: "http://localhost:8080/api/customerinfo/create",
+            data: JSON.stringify(customerInfo)
+        }).done((data) => {
+            order.customerInfo = data;
+            order.shippedDate = new Date();
+            delete order.id;
+            getUserByUserName(usernameLogin).then(() => {
+                order.user = user;
+                getOrderItemsById($("#idOrderItem").val()).then(() => {
+                    orderItem.product.quantityProduct = Number( orderItem.product.quantityProduct) - Number($("#inputQuantity").val())
+                    order.orderItem = orderItem;
+                    $.ajax({
+                        headers: {
+                            "accept": "application/json",
+                            "content-type": "application/json"
+                        },
+                        type: "POST",
+                        url: "http://localhost:8080/api/order/create",
+                        data: JSON.stringify(order)
+                    }).done((data) => {
+                        App.IziToast.showSuccessAlert("Order Thành công");
+                        $(".OrderItem tbody").html("")
+                        drawAllItemsCustomerOrder();
+                        doUpdateTotalByButton();
+                        $("#fullNameCustomer").val("")
+                        $("#phoneCustomer").val("")
+                        $("#bOdCustomer").val("")
+                        $("#addressCustomer").val("")
+                    }).fail(() => {
+                        App.IziToast.showErrorAlert("Order Thất bại");
+                    })
+                })
+            })
+        }).fail(() => {
+            App.IziToast.showErrorAlert("Order Thất bại");
+        })
+    })
+
+    drawAllItemsCustomerOrder();
+    doUpdateTotalByButton();
+</script>
+</body>
+</html>
