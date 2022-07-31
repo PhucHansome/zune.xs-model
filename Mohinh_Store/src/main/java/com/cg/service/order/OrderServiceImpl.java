@@ -2,6 +2,7 @@ package com.cg.service.order;
 
 import com.cg.model.Order;
 import com.cg.model.OrderItem;
+import com.cg.model.dto.OrderDTO;
 import com.cg.model.dto.OrderItemsDTO;
 import com.cg.repository.OrderItemsRepository;
 import com.cg.repository.OrderRepository;
@@ -52,5 +53,15 @@ public class OrderServiceImpl  implements IOrderService{
     @Override
     public void softDelete(Order order) {
 
+    }
+
+    @Override
+    public List<OrderDTO> findAllOrderDTO() {
+        return orderRepository.findAllOrderDTO();
+    }
+
+    @Override
+    public Optional<OrderDTO> findByIdOrderDTO(Long id) {
+        return orderRepository.findByIdOrderDTO(id);
     }
 }

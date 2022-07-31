@@ -3,6 +3,7 @@ package com.cg.model.dto;
 
 import com.cg.model.BaseEntity;
 import com.cg.model.CustomerInfo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -364,7 +364,6 @@
                     currentRow.replaceWith(updateRow);
                     confirmDelete();
                     doUpdateTotalByButton();
-
                 }).fail(() => {
                     App.SweetAlert.showErrorAlert("update Giá sản phẩm thất bại!");
                 })
@@ -372,58 +371,61 @@
         })
     }
 
-    $("#btn-buy").on("click", () => {
-        delete customerInfo.id;
-        customerInfo.fullName = $("#fullNameCustomer").val();
-        customerInfo.phone = $("#phoneCustomer").val();
-        customerInfo.birthDate = $("#bOdCustomer").val();
-        customerInfo.address = $("#addressCustomer").val();
+    function doBuyItem() {
+        $("#btn-buy").on("click", () => {
+            delete customerInfo.id;
+            customerInfo.fullName = $("#fullNameCustomer").val();
+            customerInfo.phone = $("#phoneCustomer").val();
+            customerInfo.birthDate = $("#bOdCustomer").val();
+            customerInfo.address = $("#addressCustomer").val();
 
-        $.ajax({
-            headers: {
-                "accept": "application/json",
-                "content-type": "application/json"
-            },
-            type: "POST",
-            url: "http://localhost:8080/api/customerinfo/create",
-            data: JSON.stringify(customerInfo)
-        }).done((data) => {
-            order.customerInfo = data;
-            order.shippedDate = new Date();
-            delete order.id;
-            getUserByUserName(usernameLogin).then(() => {
-                order.user = user;
-                getOrderItemsById($("#idOrderItem").val()).then(() => {
-                    orderItem.product.quantityProduct = Number( orderItem.product.quantityProduct) - Number($("#inputQuantity").val())
-                    order.orderItem = orderItem;
-                    $.ajax({
-                        headers: {
-                            "accept": "application/json",
-                            "content-type": "application/json"
-                        },
-                        type: "POST",
-                        url: "http://localhost:8080/api/order/create",
-                        data: JSON.stringify(order)
-                    }).done((data) => {
-                        App.IziToast.showSuccessAlert("Order Thành công");
-                        $(".OrderItem tbody").html("")
-                        drawAllItemsCustomerOrder();
-                        doUpdateTotalByButton();
-                        $("#fullNameCustomer").val("")
-                        $("#phoneCustomer").val("")
-                        $("#bOdCustomer").val("")
-                        $("#addressCustomer").val("")
-                    }).fail(() => {
-                        App.IziToast.showErrorAlert("Order Thất bại");
+            $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "POST",
+                url: "http://localhost:8080/api/customerinfo/create",
+                data: JSON.stringify(customerInfo)
+            }).done((data) => {
+                order.customerInfo = data;
+                order.shippedDate = new Date();
+                delete order.id;
+                getUserByUserName(usernameLogin).then(() => {
+                    order.user = user;
+                    getOrderItemsById($("#idOrderItem").val()).then(() => {
+                        orderItem.product.quantityProduct = Number(orderItem.product.quantityProduct) - Number($("#inputQuantity").val())
+                        order.orderItem = orderItem;
+                        $.ajax({
+                            headers: {
+                                "accept": "application/json",
+                                "content-type": "application/json"
+                            },
+                            type: "POST",
+                            url: "http://localhost:8080/api/order/create",
+                            data: JSON.stringify(order)
+                        }).done((data) => {
+                            App.IziToast.showSuccessAlert("Order Thành công");
+                            $(".OrderItem tbody").html("")
+                            drawAllItemsCustomerOrder();
+                            doUpdateTotalByButton();
+                            $("#fullNameCustomer").val("")
+                            $("#phoneCustomer").val("")
+                            $("#bOdCustomer").val("")
+                            $("#addressCustomer").val("")
+                        }).fail(() => {
+                            App.IziToast.showErrorAlert("Order Thất bại");
+                        })
                     })
                 })
+            }).fail(() => {
+                App.IziToast.showErrorAlert("Order Thất bại");
             })
-        }).fail(() => {
-            App.IziToast.showErrorAlert("Order Thất bại");
         })
-    })
+    }
 
     drawAllItemsCustomerOrder();
+    doBuyItem();
     doUpdateTotalByButton();
 </script>
 </body>
