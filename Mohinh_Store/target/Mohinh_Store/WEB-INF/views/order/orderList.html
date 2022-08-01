@@ -67,6 +67,7 @@
                                 <th class="align-middle text-center">Tổng tiền</th>
                                 <th class="align-middle text-center">Địa chỉ</th>
                                 <th class="align-middle text-center">Người tạo</th>
+                                <th class="align-middle text-center">Status</th>
                                 <th class="align-middle text-center" colspan="2">Công cụ</th>
                             </tr>
                             </thead>
@@ -144,14 +145,15 @@
                     currency: 'VND'
                 }).format(order.orderItem.grandTotal)}</td>
                 <td class="align-middle text-center">${order.customerInfo.address}</td>
-<!--                <td class="align-middle text-center">${order.status}</td>-->
                 <td class="align-middle text-center">${order.user.username}</td>
+                <td class="align-middle text-center"><b> ${order.status}</b></td>
                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
                  <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
             </tr>
             `
                 $('#tableListOrder tbody').prepend(str);
                 handleShowView();
+                doComplete()
             })
         }).fail(() => {
             App.IziToast.showErrorAlert("List Order Trống")
@@ -197,6 +199,8 @@
                                 <div class="row"><label >Ngày hoàn thành đơn : ${order.shippedDate}</label></div>
 
                                 <div class="row"><label >Địa chỉ : ${order.customerInfo.address}</label>
+                                </div>
+                                <div class="row"><label >Địa chỉ : ${order.status}</label>
                                 </div>
                             </div>
                             <div class="col-5">
@@ -251,10 +255,62 @@
                 `
                 $(".OrderBill").append(str);
                 $("#viewOrder").modal("show");
+                doComplete()
             })
         })
     }
 
+    function doComplete() {
+        $("#btn-CheckOut").on("click", function () {
+            let id = $(this).data("id")
+            getOrderById(id).then(() => {
+                $.ajax({
+                    "headers": {
+                        "accept": "application/json",
+                        "content-type": "application/json"
+                    },
+                    "type": "PUT",
+                    "url": "http://localhost:8080/api/order/update",
+                    "data": JSON.stringify(order)
+                }).done((data) => {
+                    order = data
+                    let currentRow = $('#tr_' + order.id)
+                    let str = `
+                                <tr id="tr_${order.id}">
+                                    <td class="align-middle text-center"></td>
+                                    <td class="align-middle text-center">${order.id}</td>
+                                    <td class="align-middle text-center " >${order.orderItem.product.productName}</td>
+                                    <td class="align-middle text-center" >${order.orderItem.product.category.name}</td>
+                                    <td class="align-middle text-center" >${order.customerInfo.fullName}</td>
+                                    <td class="align-middle text-center">${order.orderItem.quantityOrdered}</td>
+                                    <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(order.orderItem.product.priceProduct)}</td>
+                                    <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(order.orderItem.grandTotal)}</td>
+                                    <td class="align-middle text-center">${order.customerInfo.address}</td>
+                                    <td class="align-middle text-center">${order.user.username}</td>
+                                    <td class="align-middle text-center"><b> ${order.status}</b></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
+                                     <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
+                                </tr>
+                               `
+                    currentRow.replaceWith(str);
+                    doComplete()
+                    handleShowView()
+                    App.IziToast.showSuccessAlert("Thay đổi trạng thái thành công")
+                }).fail(() => {
+                    App.IziToast.showErrorAlert("Thay đổi trạng thái thất bại")
+                })
+            })
+
+        })
+    }
+
+    doComplete()
     handleShowView()
     LoadingAllOrder()
 </script>

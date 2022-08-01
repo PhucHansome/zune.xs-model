@@ -25,6 +25,9 @@ public class Order extends BaseEntity{
     @Column(name = "shipped_date")
     private Date shippedDate;
 
+    @Column(name = "status")
+    private String status;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -37,12 +40,15 @@ public class Order extends BaseEntity{
     @JoinColumn(name = "orderItems_id")
     private OrderItem orderItem;
 
+
+
     public OrderDTO toOrderDTO(){
         return new OrderDTO()
                 .setId(id)
                 .setShippedDate(shippedDate)
                 .setUser(user.toUserDTO())
                 .setCustomerInfo(customerInfo.toCustomerDTO())
-                .setOrderItem(orderItem.toOderItemsDTO());
+                .setOrderItem(orderItem.toOderItemsDTO())
+                .setStatus(status);
     }
 }

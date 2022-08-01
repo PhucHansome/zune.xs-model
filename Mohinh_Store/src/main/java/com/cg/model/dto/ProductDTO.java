@@ -33,7 +33,7 @@ public class ProductDTO  {
 
     private CategoryDTO category;
 
-    private int quantityProduct;
+    private BigDecimal quantityProduct;
 
     private String productDescription;
 
@@ -47,7 +47,7 @@ public class ProductDTO  {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date updatedAt;
 
-    public ProductDTO(Long id, String productCode, String productName, Category category, int quantityProduct, String productDescription, BigDecimal priceProduct, String image, Date createdAt, Date updatedAt) {
+    public ProductDTO(Long id, String productCode, String productName, Category category, BigDecimal quantityProduct, String productDescription, BigDecimal priceProduct, String image, Date createdAt, Date updatedAt) {
         this.id = id;
         this.productCode = productCode;
         this.productName = productName;

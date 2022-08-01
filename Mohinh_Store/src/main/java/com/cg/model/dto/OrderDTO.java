@@ -31,12 +31,15 @@ public class OrderDTO {
 
    private OrderItemsDTO orderItem;
 
-    public OrderDTO(Long id, Date shippedDate, User user, CustomerInfo customerInfo, OrderItem orderItem) {
+   private String status;
+
+    public OrderDTO(Long id, Date shippedDate, User user, CustomerInfo customerInfo, OrderItem orderItem, String status) {
         this.id = id;
         this.shippedDate = shippedDate;
         this.user = user.toUserDTO();
         this.customerInfo = customerInfo.toCustomerDTO();
         this.orderItem = orderItem.toOderItemsDTO();
+        this.status = status;
     }
 
     public Order toOrder(){
@@ -45,6 +48,7 @@ public class OrderDTO {
                 .setShippedDate(shippedDate)
                 .setUser(user.toUser())
                 .setCustomerInfo(customerInfo.toCustomer())
-                .setOrderItem(orderItem.toOderItem());
+                .setOrderItem(orderItem.toOderItem())
+                .setStatus(status);
     }
 }

@@ -16,7 +16,8 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
             "o.shippedDate, " +
             "o.user, " +
             "o.customerInfo, " +
-            "o.orderItem " +
+            "o.orderItem, " +
+            "o.status " +
             " )  " +
             "FROM Order o  WHERE o.deleted = false ")
     List<OrderDTO> findAllOrderDTO();
@@ -25,7 +26,8 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
             "o.shippedDate, " +
             "o.user, " +
             "o.customerInfo, " +
-            "o.orderItem " +
+            "o.orderItem, " +
+            "o.status " +
             " )  " +
             "FROM Order o  WHERE o.id = ?1 ")
     Optional<OrderDTO> findByIdOrderDTO(Long id);

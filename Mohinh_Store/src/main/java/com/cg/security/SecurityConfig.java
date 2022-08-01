@@ -61,8 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().authenticationEntryPoint(restServicesEntryPoint());
 
         http.authorizeRequests()
-                .antMatchers("/", "/api/auth/login", "/api/auth/register", "/login").permitAll()
-                .antMatchers("/transfers").hasAnyAuthority("ADMIN")
+                .antMatchers("/","/homecustomer" ,"/api/auth/login", "/api/auth/register", "/login").permitAll()
+                .antMatchers("/order", "/user", "/product").hasAnyAuthority("ADMIN")
                 .antMatchers("/assets/**").permitAll()
                 .antMatchers("https://zunezx.com/public/asset/**").permitAll()
                 .antMatchers(

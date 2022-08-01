@@ -139,6 +139,10 @@
 
     let order = new Order();
 
+    let product = new Product();
+
+    let category = new Category();
+
     var usernameLogin = $("#userNameLogin").text();
 
     function drawAllItemsCustomerOrder() {
@@ -394,7 +398,6 @@
                 getUserByUserName(usernameLogin).then(() => {
                     order.user = user;
                     getOrderItemsById($("#idOrderItem").val()).then(() => {
-                        orderItem.product.quantityProduct = Number(orderItem.product.quantityProduct) - Number($("#inputQuantity").val())
                         order.orderItem = orderItem;
                         $.ajax({
                             headers: {

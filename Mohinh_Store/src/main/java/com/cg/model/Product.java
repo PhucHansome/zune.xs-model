@@ -34,7 +34,7 @@ public class Product extends BaseEntity{
     private Category category;
 
     @Column(name = "quantity_product")
-    private int quantityProduct;
+    private BigDecimal quantityProduct;
 
     @Column(name = "product_description")
     private String productDescription;
