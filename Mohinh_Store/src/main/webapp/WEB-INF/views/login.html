@@ -144,8 +144,13 @@
             }, 1000);
 
         }).fail((jqXHR) => {
-            App.IziToast.showErrorAlert("Đăng Ký thất bại")
-            console.log(jqXHR)
+            console.log(jqXHR);
+           if (jqXHR.responseJSON) {
+                $.each(jqXHR.responseJSON, (key, item) => {
+                    App.IziToast.showErrorAlert(item) ;
+                })
+
+            }
         })
     })
 
@@ -173,8 +178,15 @@
                 window.location.href = "/home";
             }, 2000);
         }).fail((jqXHR) => {
-            App.IziToast.showErrorAlert("Đăng nhập thất bại")
-            console.log(jqXHR)
+            App.IziToast.showErrorAlert("Đăng nhập thất bại!")
+            setTimeout(function () {
+                if (jqXHR.responseJSON) {
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        App.IziToast.showErrorAlert(item) ;
+                    })
+                }
+            }, 500);
+
         })
     })
 

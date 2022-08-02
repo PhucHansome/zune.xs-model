@@ -44,7 +44,6 @@ public class OrderRestController {
     @GetMapping("/allorder")
     public ResponseEntity<?>showListOrder(){
         List<OrderDTO> orderList = orderService.findAllOrderDTO();
-        String pattern = "yyyy-MM-dd";
 
         return new ResponseEntity<>(orderList,HttpStatus.OK);
     }
@@ -97,7 +96,7 @@ public class OrderRestController {
         return new ResponseEntity<>(updateOrder.toOrderDTO(), HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/cancelOrder")
+    @PutMapping("/cancelorder")
     public  ResponseEntity<?> doCancel(@RequestBody OrderDTO orderDTO, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);

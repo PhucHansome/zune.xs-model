@@ -311,7 +311,6 @@
         })
     }
 
-
     function doUpdateTotalByButton() {
         $(".btn-update-total").on("click", function () {
             let id = $(this).data("id")
@@ -339,6 +338,7 @@
                     let currentRow = $('#tr_' + data.id);
                     let updateRow = `
                      <tr id="tr_${data.id}">
+                     <input type="hidden" id="idOrderItem" value="${data.id}">
                     <td class="text-center align-middle">
                         <a href="#"><img
                                 width="80px"
@@ -382,14 +382,16 @@
             `
                     App.IziToast.showSuccessAlert("Cập nhật giá sản phẩm thành công");
                     currentRow.replaceWith(updateRow);
-                    confirmDelete();
+                    $('body,html').animate({scrollTop: 0}, 750);
+                    setTimeout(function () {
+                        window.location.href= "/homecustomer/order";
+                    }, 1000);
                 }).fail(() => {
                     App.SweetAlert.showErrorAlert("update Giá sản phẩm thất bại!");
                 })
             })
         })
     }
-
 
     function doBuyItem() {
         $("#btn-buy").on("click", () => {
@@ -425,9 +427,7 @@
                             data: JSON.stringify(order)
                         }).done((data) => {
                             App.IziToast.showSuccessAlert("Order Thành công");
-
-
-                            doUpdateTotalByButton();
+                            // doUpdateTotalByButton();
                             $("#fullNameCustomer").val("")
                             $("#phoneCustomer").val("")
                             $("#bOdCustomer").val("")
@@ -435,7 +435,7 @@
                             $('body,html').animate({scrollTop: 0}, 750);
                             setTimeout(function () {
                                 $(".OrderItem tbody").html("")
-                                drawAllItemsCustomerOrder();
+                                // drawAllItemsCustomerOrder();
                                 window.location.href= "/homecustomer/product";
                             }, 1000);
                         }).fail(() => {
@@ -462,7 +462,6 @@
             })
         })
     }
-
 
     doBuyItem();
     drawAllItemsCustomerOrder();

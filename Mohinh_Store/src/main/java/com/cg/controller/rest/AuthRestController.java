@@ -84,7 +84,7 @@ public class AuthRestController {
         Optional<UserDTO> userDTO= userService.findUserDTOByUsername(user.getUsername());
 
         if(userDTO.get().getStatus().equals("Block")){
-            return new ResponseEntity<>("tài khoản đã bị khóa", HttpStatus.FORBIDDEN);
+           throw new EmailExistsException("Tài khoản này đã bị block!");
         }
 
         Authentication authentication  =  authenticationManager.authenticate(

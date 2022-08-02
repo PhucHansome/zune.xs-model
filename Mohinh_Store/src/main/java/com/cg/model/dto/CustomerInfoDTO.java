@@ -31,7 +31,7 @@ public class CustomerInfoDTO  {
     @Size(max = 15, message ="Số điẹn thoại tối đa 15 số" )
     private String phone;
 
-    @PastOrPresent(message = "Ngày đấy chưa đến sao bạn có mặt được!!")
+//    @PastOrPresent(message = "Ngày đấy chưa đến sao bạn có mặt được!!")
     private Date birthDate;
 
     @NotEmpty(message = "Địa chỉ không được để trống")

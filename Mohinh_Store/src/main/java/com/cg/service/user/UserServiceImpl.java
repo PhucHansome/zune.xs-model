@@ -97,4 +97,9 @@ public class UserServiceImpl implements IUserService {
     public boolean existsById(Long id) {
         return userRepository.existsById(id);
     }
+
+    @Override
+    public User saveNoPassword(User user) {
+        return userRepository.save(user);
+    }
 }

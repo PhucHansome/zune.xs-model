@@ -23,13 +23,13 @@ public class CustomerInfo extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
 
-    @Column(unique = true,nullable = false)
+    @Column()
     private  String fullName;
 
-    @Column(unique = true, nullable = false)
+    @Column()
     private  String phone;
 
-    @Column( name = "bOd",unique = true, nullable = false)
+    @Column( name = "bOd")
     private Date birthDate;
 
     @Column( name = "address")

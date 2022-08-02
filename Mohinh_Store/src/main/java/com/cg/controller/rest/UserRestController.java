@@ -67,6 +67,38 @@ public class UserRestController {
         return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
     }
 
+    @PutMapping("/active")
+    public ResponseEntity<?>updateActive(@RequestBody UserDTO userDTO,BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()) {
+            return appUtils.mapErrorToResponse(bindingResult);
+        }
+
+        boolean existId = userService.existsById(userDTO.getId());
+        if (!existId) {
+            throw new ResourceNotFoundException("Customer ID invalid");
+        }
+        userDTO.setStatus("Active");
+        User user = userService.saveNoPassword(userDTO.toUser());
+        return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/block")
+    public ResponseEntity<?>updateBlock(@RequestBody UserDTO userDTO,BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()) {
+            return appUtils.mapErrorToResponse(bindingResult);
+        }
+
+        boolean existId = userService.existsById(userDTO.getId());
+        if (!existId) {
+            throw new ResourceNotFoundException("Customer ID invalid");
+        }
+        userDTO.setStatus("Block");
+        User user = userService.saveNoPassword(userDTO.toUser());
+        return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
+    }
+
     @GetMapping("/name/{username}")
     public ResponseEntity<?> getUsernameByName(@Validated @PathVariable String username){
         Optional<User> userOptional = userService.findByUsername(username);

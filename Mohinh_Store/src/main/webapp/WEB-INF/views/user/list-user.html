@@ -67,7 +67,8 @@
                                 <th>#</th>
                                 <th>EMAIL</th>
                                 <th>ROLE</th>
-                                <th colspan="2">ACTION</th>
+                                <th>STATUS</th>
+                                <th colspan="3">ACTION</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -130,7 +131,10 @@
                         <td>${item.id}</td>
                         <td>${item.username}</td>
                         <td><b>${item.role.code}</b></td>
-                        <td><button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active-block">Active</button>
+                        <td><b>${item.status}</b></td>
+                        <td>
+                        <button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active">Active</button>
+                        <button class="btn btn-outline-danger" data-id="${item.id}" id="btn-block">block</button>
                         <button type="button" data-id="${item.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </button></td>
@@ -139,7 +143,8 @@
                 $('#tableListUsers tbody').prepend(str);
                 handleShowCreateModal();
                 handleShowUpdatePassWord();
-                handleActive()
+                handleActive();
+                handleBlock();
             })
         }).fail(() => {
             App.SweetAlert.showErrorAlert("Customer Errors")
@@ -187,58 +192,90 @@
     }
 
     function handleActive() {
-        $("#btn-active-block").on("click", function () {
+        $("#btn-active").on("click", function () {
             let id = $(this).data("id");
             getUserById(id).then(() => {
-
-                let currentRow = $('#tr_' + user.id);
-                let updateRow = `
+                $.ajax({
+                    headers: {
+                        "accept": "application/json",
+                        "content-type": "application/json"
+                    },
+                    type: "PUT",
+                    url: "http://localhost:8080/api/user/active",
+                    data: JSON.stringify(user)
+                }).done((data) => {
+                    user = data;
+                    let currentRow = $('#tr_' + user.id);
+                    let updateRow = `
 
                      <tr id="tr_${user.id}">
                         <td></td>
                         <td>${user.id}</td>
                         <td>${user.username}</td>
                         <td><b>${user.role.code}</b></td>
-                        <td><button class="btn btn-outline-danger" data-id="${user.id}" id="btn-block">block</button>
-                        <td></td>
+                        <td>${user.status}</td>
+                        <td>
+                        <button data-id="${user.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active">Active</button>
+                        <button class="btn btn-outline-danger" data-id="${user.id}" id="btn-block">block</button>
+                        <button type="button" data-id="${user.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button></td>
                     </tr>
             `
-                App.IziToast.showSuccessAlert("Tài khoản đã bị block");
-                currentRow.replaceWith(updateRow);
-                handleShowUpdatePassWord()
-                handleShowCreateModal()
-                handleblock()
+                    App.IziToast.showSuccessAlert("Tài Khoản đã được Active!");
+                    currentRow.replaceWith(updateRow);
+                    handleShowUpdatePassWord()
+                    handleShowCreateModal()
+                    handleActive();
+                    handleBlock();
+                }).fail(() => {
+                    App.IziToast.showErrorAlert("False")
+                })
             })
         })
     }
 
-    function handleblock() {
+    function handleBlock() {
         $("#btn-block").on("click", function () {
             let id = $(this).data("id");
             getUserById(id).then(() => {
-
-                let currentRow1 = $('#tr_' + user.id);
-                let updateRow1 = `
+                $.ajax({
+                    headers: {
+                        "accept": "application/json",
+                        "content-type": "application/json"
+                    },
+                    type: "PUT",
+                    url: "http://localhost:8080/api/user/block",
+                    data: JSON.stringify(user)
+                }).done((data) => {
+                    user = data;
+                    let currentRow = $('#tr_' + user.id);
+                    let updateRow = `
 
                      <tr id="tr_${user.id}">
                         <td></td>
                         <td>${user.id}</td>
                         <td>${user.username}</td>
                         <td><b>${user.role.code}</b></td>
+                        <td><b>${user.status}</b></td>
                         <td>
-                            <button data-id="${user.id}" class="btn btn-outline-success"   id="btn-active-block">Active</button>
-                            <button type="button" data-id="${user.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                            </button>
-                        </td>
+                        <button data-id="${user.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active">Active</button>
+                        <button class="btn btn-outline-danger" data-id="${user.id}" id="btn-block">block</button>
+                        <button type="button" data-id="${user.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button></td>
                     </tr>
-
             `
-                App.IziToast.showSuccessAlert("Tài khoản đã mở khóa");
-                currentRow1.replaceWith(updateRow1);
-                handleShowUpdatePassWord()
-                handleShowCreateModal()
-                handleActive()
+                    App.IziToast.showSuccessAlert("Tài khoản đã bị block");
+                    currentRow.replaceWith(updateRow);
+                    handleShowUpdatePassWord()
+                    handleShowCreateModal()
+                    handleActive();
+                    handleBlock();
+                }).fail(() => {
+                    App.IziToast.showErrorAlert("False")
+
+                })
             })
         })
     }
@@ -276,11 +313,13 @@
                         <td>${data.id}</td>
                         <td>${data.username}</td>
                         <td><b>${data.role.code}</b></td>
+                        <td>${data.status}</td>
                         <td>
-                            <button data-id="${data.id}" class="btn btn-outline-success"  id="btn-active-block">Active</button>
-                            <button type="button" data-id="${data.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                            </button>
+                         <button data-id="${data.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active">Active</button>
+                        <button class="btn btn-outline-danger" data-id="${data.id}" id="btn-block">block</button>
+                        <button type="button" data-id="${data.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
                         </td>
                     </tr>
                     `
@@ -290,7 +329,7 @@
             $("#passwordConCre").val()
             handleShowCreateModal();
             handleShowUpdatePassWord()
-            handleblock()
+            handleBlock()
             handleActive()
 
         }).fail((jqXHR) => {
@@ -310,7 +349,7 @@
         })
     }
 
-    function doUpdatePassword(){
+    function doUpdatePassword() {
         let password = $("#passwordUp").val();
 
         user.id = $("#idUser").val();
@@ -356,7 +395,7 @@
             },
             "passwordConCre": {
                 required: true,
-                equalTo : "#passwordCre",
+                equalTo: "#passwordCre",
                 minlength: 6,
                 maxlength: 30,
             }
@@ -376,7 +415,7 @@
             ,
             "passwordConCre": {
                 required: "Vui lòng nhập Password Confirm",
-                equalTo : "Mật khẩu phải giống nhau",
+                equalTo: "Mật khẩu phải giống nhau",
                 minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
                 maxlength: $.validator.format("Password tối đa {0} ký tự!"),
             }
@@ -408,7 +447,7 @@
             },
             "passwordConUp": {
                 required: true,
-                equalTo : "#passwordUp",
+                equalTo: "#passwordUp",
                 minlength: 6,
                 maxlength: 30,
             }
@@ -421,7 +460,7 @@
             },
             "passwordConUp": {
                 required: "Vui lòng nhập Password Confirm",
-                equalTo : "Mật khẩu phải giống nhau",
+                equalTo: "Mật khẩu phải giống nhau",
                 minlength: $.validator.format("Password Confirm tối thiểu {0} ký tự!"),
                 maxlength: $.validator.format("Password Confirm tối đa {0} ký tự!"),
             }
@@ -447,7 +486,8 @@
     handleShowUpdatePassWord()
     handleShowCreateModal()
     LoadingAllUser();
-    handleActive()
+    handleActive();
+    handleBlock();
 </script>
 
 </body>

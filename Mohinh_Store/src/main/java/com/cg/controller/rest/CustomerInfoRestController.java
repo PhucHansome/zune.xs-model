@@ -27,11 +27,22 @@ public class CustomerInfoRestController {
     private AppUtil appUtils;
 
     @PostMapping("/create")
-    public ResponseEntity<?> doCreate(@Validated @RequestBody CustomerInfoDTO customerInfoDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return appUtils.mapErrorToResponse(bindingResult);
+    public ResponseEntity<?> doCreate(@Validated @RequestBody CustomerInfoDTO customerInfoDTO, BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return appUtils.mapErrorToResponse(bindingResult);
+            }
+            customerInfoDTO.setId(0L);
+            CustomerInfo customerInfo1 = customerInfoDTO.toCustomer();
+            CustomerInfo customerInfo = customerInfoService.save(customerInfo1);
+            return new ResponseEntity<>(customerInfo.toCustomerDTO(), HttpStatus.OK);
+        } catch (Exception e) {
+            customerInfoDTO.setId(0L);
+            CustomerInfo customerInfo1 = customerInfoDTO.toCustomer();
+            CustomerInfo customerInfo = customerInfoService.save(customerInfo1);
+            return new ResponseEntity<>(customerInfo.toCustomerDTO(), HttpStatus.OK);
         }
-        CustomerInfo customerInfo = customerInfoService.save(customerInfoDTO.toCustomer());
-        return new ResponseEntity<>(customerInfo.toCustomerDTO(), HttpStatus.OK);
+
+
     }
 }

@@ -68,7 +68,7 @@
                                 <th class="align-middle text-center">Địa chỉ</th>
                                 <th class="align-middle text-center">Người tạo</th>
                                 <th class="align-middle text-center">Status</th>
-                                <th class="align-middle text-center" colspan="2">Công cụ</th>
+                                <th class="align-middle text-center" colspan="3">Công cụ</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -149,11 +149,13 @@
                 <td class="align-middle text-center"><b> ${order.status}</b></td>
                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
                  <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
+                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  id="btn-CheckCancel"><i class="fa-solid fa-ban"></i></button></td>
             </tr>
             `
                 $('#tableListOrder tbody').prepend(str);
                 handleShowView();
                 doComplete()
+                doCancel()
             })
         }).fail(() => {
             App.IziToast.showErrorAlert("List Order Trống")
@@ -229,6 +231,7 @@
                                     <th class="align-middle text-center">Tên mô hình</th>
                                     <th class="align-middle text-center">Danh mục</th>
                                     <th class="align-middle text-center">Số lượng</th>
+                                    <th class="align-middle text-center">Người tạo đơn</th>
                                     <th class="align-middle text-center">Đơn giá</th>
                                     <th class="align-middle text-center">Tổng tiền thu</th>
                                     </thead>
@@ -238,14 +241,15 @@
                                     <td class="align-middle text-center">${order.orderItem.product.productName}</td>
                                     <td class="align-middle text-center">${order.orderItem.product.category.name}</td>
                                     <td class="align-middle text-center">${order.orderItem.quantityOrdered}</td>
+                                    <td class="align-middle text-center">${order.user.username}</td>
                                     <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND'
-                }).format(order.orderItem.product.priceProduct)}</td>
-                                     <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND'
-                }).format(order.orderItem.grandTotal)}</td>
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(order.orderItem.product.priceProduct)}</td>
+                                    <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(order.orderItem.grandTotal)}</td>
                                     </tbody>
                                 </table>
                             </div>
@@ -256,6 +260,7 @@
                 $("#OrderBill").append(str);
                 $("#viewOrder").modal("show");
                 doComplete()
+                doCancel()
             })
         })
     }
@@ -307,12 +312,14 @@
                                     <td class="align-middle text-center">${order.user.username}</td>
                                     <td class="align-middle text-center"><b> ${order.status}</b></td>
                                     <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
-                                     <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  id="btn-CheckCancel"><i class="fa-solid fa-ban"></i></button></td>
                                 </tr>
                                `
                     currentRow.replaceWith(str);
                     doComplete()
                     handleShowView()
+                    doCancel()
                     App.IziToast.showSuccessAlert("Thay đổi trạng thái thành công")
                 }).fail(() => {
                     App.IziToast.showErrorAlert("Thay đổi trạng thái thất bại")
@@ -322,6 +329,59 @@
         })
     }
 
+    function doCancel() {
+        $("#btn-CheckCancel").on("click", function () {
+            let id = $(this).data("id")
+            getOrderById(id).then(() => {
+                $.ajax({
+                    "headers": {
+                        "accept": "application/json",
+                        "content-type": "application/json"
+                    },
+                    "type": "PUT",
+                    "url": "http://localhost:8080/api/order/cancelorder",
+                    "data": JSON.stringify(order)
+                }).done((data) => {
+                    order = data
+                    let currentRow = $('#tr_' + order.id)
+                    let str = `
+                                <tr id="tr_${order.id}">
+                                    <td class="align-middle text-center"></td>
+                                    <td class="align-middle text-center">${order.id}</td>
+                                    <td class="align-middle text-center " >${order.orderItem.product.productName}</td>
+                                    <td class="align-middle text-center" >${order.orderItem.product.category.name}</td>
+                                    <td class="align-middle text-center" >${order.customerInfo.fullName}</td>
+                                    <td class="align-middle text-center">${order.orderItem.quantityOrdered}</td>
+                                    <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(order.orderItem.product.priceProduct)}</td>
+                                    <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(order.orderItem.grandTotal)}</td>
+                                    <td class="align-middle text-center">${order.customerInfo.address}</td>
+                                    <td class="align-middle text-center">${order.user.username}</td>
+                                    <td class="align-middle text-center"><b> ${order.status}</b></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  id="btn-CheckCancel"><i class="fa-solid fa-ban"></i></button></td>
+                                </tr>
+                               `
+                    currentRow.replaceWith(str);
+                    doComplete()
+                    handleShowView()
+                    doCancel()
+                    App.IziToast.showSuccessAlert("Thay đổi trạng thái thành công")
+                }).fail(() => {
+                    App.IziToast.showErrorAlert("Thay đổi trạng thái thất bại")
+                })
+            })
+
+        })
+    }
+
+    doCancel()
     doComplete()
     handleShowView()
     LoadingAllOrder()
