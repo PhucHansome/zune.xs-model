@@ -1,6 +1,8 @@
 package com.cg.controller.rest;
 
+import com.cg.exception.DataInputException;
 import com.cg.exception.ResourceNotFoundException;
+import com.cg.model.Category;
 import com.cg.model.Product;
 import com.cg.model.dto.CategoryDTO;
 import com.cg.model.dto.ProductDTO;
@@ -11,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,18 +36,18 @@ public class ProductRestController {
 
 
     @GetMapping
-    public ResponseEntity<?> showListProduct(){
+    public ResponseEntity<?> showListProduct() {
         List<ProductDTO> productDTOList = productService.findAllProductDTO();
         return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable Long id){
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
         Optional<Product> productOptional = productService.findById(id);
-        if(!productOptional.isPresent()){
-            throw  new ResourceNotFoundException("Invalid User Id");
+        if (!productOptional.isPresent()) {
+            throw new ResourceNotFoundException("Invalid User Id");
         }
-        return new ResponseEntity<>(productOptional.get().toProductDTO(),HttpStatus.OK);
+        return new ResponseEntity<>(productOptional.get().toProductDTO(), HttpStatus.OK);
     }
 
     @GetMapping("/category")
@@ -54,28 +59,35 @@ public class ProductRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> doCreate(@RequestBody ProductDTO productDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> doCreate(@Validated @RequestBody ProductDTO productDTO, BindingResult bindingResult) {
+        try {
 
-        if (bindingResult.hasErrors()) {
-            return appUtils.mapErrorToResponse(bindingResult);
+            if (bindingResult.hasErrors()) {
+                return appUtils.mapErrorToResponse(bindingResult);
+            }
+            productDTO.setId(0L);
+            Product newProduct = productService.save(productDTO.toProduct());
+
+            return new ResponseEntity<>(newProduct.toProductDTO(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Thêm sản phẩm thất bại", HttpStatus.BAD_REQUEST);
         }
-        productDTO.setId(0L);
-        productDTO.getCategory().setId(0L);
-        Product newProduct = productService.save(productDTO.toProduct());
 
-        return new ResponseEntity<>(newProduct.toProductDTO(), HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
-    public  ResponseEntity<?> doUpdate(@RequestBody ProductDTO productDTO, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return appUtils.mapErrorToResponse(bindingResult);
-        }
+    public ResponseEntity<?> doUpdate(@Validated @RequestBody ProductDTO productDTO, BindingResult bindingResult) {
 
-        productDTO.getCategory().setId(0L);
-        Product updateProduct = productService.save(productDTO.toProduct());
+            new ProductDTO().validate(productDTO, bindingResult);
 
-        return new ResponseEntity<>(updateProduct.toProductDTO(), HttpStatus.ACCEPTED);
+            if (bindingResult.hasErrors()) {
+                return appUtils.mapErrorToResponse(bindingResult);
+            }
+
+            Product updateProduct = productService.save(productDTO.toProduct());
+
+            return new ResponseEntity<>(updateProduct.toProductDTO(), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{customerId}")

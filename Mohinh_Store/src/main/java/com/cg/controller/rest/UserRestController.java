@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +68,7 @@ public class UserRestController {
     }
 
     @GetMapping("/name/{username}")
-    public ResponseEntity<?> getUsernameByName(@PathVariable String username){
+    public ResponseEntity<?> getUsernameByName(@Validated @PathVariable String username){
         Optional<User> userOptional = userService.findByUsername(username);
         if(!userOptional.isPresent()){
             throw  new ResourceNotFoundException("Invalid UserName");

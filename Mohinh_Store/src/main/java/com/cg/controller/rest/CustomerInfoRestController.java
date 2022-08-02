@@ -10,9 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/api/customerinfo")
@@ -24,7 +27,7 @@ public class CustomerInfoRestController {
     private AppUtil appUtils;
 
     @PostMapping("/create")
-    public ResponseEntity<?> doCreate(@RequestBody CustomerInfoDTO customerInfoDTO, BindingResult bindingResult){
+    public ResponseEntity<?> doCreate(@Validated @RequestBody CustomerInfoDTO customerInfoDTO, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }

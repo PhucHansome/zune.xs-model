@@ -18,10 +18,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 //    boolean existsByEmailAndIdIsNot(String emai, Long id);
 
-    @Query("SELECT NEW com.cg.model.dto.UserDTO (u.id, u.username) FROM User u WHERE u.username = ?1")
+    @Query("SELECT NEW com.cg.model.dto.UserDTO (u.id, u.username, u.status) FROM User u WHERE u.username = ?1")
     Optional<UserDTO> findUserDTOByUsername(String username);
 
-    @Query("SELECT NEW com.cg.model.dto.UserDTO (u.id, u.username, u.role)  FROM User u  WHERE u.deleted = false ")
+    @Query("SELECT NEW com.cg.model.dto.UserDTO (u.id, u.username, u.role, u.status)  FROM User u  WHERE u.deleted = false ")
     List<UserDTO>findAllUserDTOByDeletedIsFailse();
 
     boolean existsById(Long id);

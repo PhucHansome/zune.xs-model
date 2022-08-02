@@ -42,9 +42,9 @@ public class ProductServiceImpl implements IProductService{
 
     @Override
     public Product save(Product product) {
-        Category category ;
-        category = categoryRepository.save(product.getCategory());
-        product.setCategory(category);
+//        Category category ;
+//        category = categoryRepository.save(product.getCategory());
+//        product.setCategory(category);
         return productRepository.save(product);
     }
 

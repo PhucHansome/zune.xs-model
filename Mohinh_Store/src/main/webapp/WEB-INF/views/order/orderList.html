@@ -180,12 +180,12 @@
         $("#btn_View").on("click", function () {
             let id = $(this).data("id")
             getOrderById(id).then(() => {
-                $(".OrderBill").html("")
+                $("#OrderBill").html("")
                 let str = `
                         <div class="row ">
                         <div class="col-1"></div>
                         <div class="col-10 text-center">
-                            <h3>Order #${order.id}</h3>
+                            <h2 style="color: Red">Order #${order.id}</h2>
 
                             </div>
                              <hr>
@@ -196,11 +196,11 @@
                             <div class="col-5">
                                 <div class="row"><label style="font-size: 25px" ><b>OrderInformation</b></label>
                                 </div>
-                                <div class="row"><label >Ngày hoàn thành đơn : ${order.shippedDate}</label></div>
+                                <div class="row"><label >Ngày hoàn thành đơn : ${formatDate(order.shippedDate)}</label></div>
 
                                 <div class="row"><label >Địa chỉ : ${order.customerInfo.address}</label>
                                 </div>
-                                <div class="row"><label >Địa chỉ : ${order.status}</label>
+                                <div class="row"><label >Trạng thái : ${order.status} </label>
                                 </div>
                             </div>
                             <div class="col-5">
@@ -210,7 +210,7 @@
                                 </div>
                                 <div class="row"><label >số điện thoại: ${order.customerInfo.phone}</label>
                                 </div>
-                                <div class="row"><label >Ngày sinh: ${order.customerInfo.birthDate}</label>
+                                <div class="row"><label >Ngày sinh: ${formatDate(order.customerInfo.birthDate)}</label>
                             </div>
                             <div class="col-1"></div>
                             </div>
@@ -226,11 +226,11 @@
                                     <thead class="thead-light">
                                     <th class="align-middle text-center">#</th>
                                     <th class="align-middle text-center">Image</th>
-                                    <th class="align-middle text-center">tên mô hình</th>
-                                    <th class="align-middle text-center">danh mục</th>
-                                    <th class="align-middle text-center">số lượng</th>
-                                    <th class="align-middle text-center">đơn giá</th>
-                                    <th class="align-middle text-center">tổng tiền phải thu</th>
+                                    <th class="align-middle text-center">Tên mô hình</th>
+                                    <th class="align-middle text-center">Danh mục</th>
+                                    <th class="align-middle text-center">Số lượng</th>
+                                    <th class="align-middle text-center">Đơn giá</th>
+                                    <th class="align-middle text-center">Tổng tiền thu</th>
                                     </thead>
                                     <tbody>
                                     <td class="align-middle text-center">${order.orderItem.product.productCode}</td>
@@ -253,11 +253,23 @@
 
                         </div>
                 `
-                $(".OrderBill").append(str);
+                $("#OrderBill").append(str);
                 $("#viewOrder").modal("show");
                 doComplete()
             })
         })
+    }
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [day, month, year].join('-');
     }
 
     function doComplete() {

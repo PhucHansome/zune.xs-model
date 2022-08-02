@@ -46,6 +46,7 @@
                         <div class="row">
                             <div class="col-xs-12 col-sm-12">
                                 <div class="cart-product cart-border">
+
                                     <h2><span>Giỏ Hàng</span></h2>
                                     <p>Giỏ hàng của bạn có những sản phẩm sau</p>
                                     <form action="https://zunezx.com/index.php?route=checkout/cart/edit" method="post"
@@ -73,9 +74,13 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-sm-12">
-                                <div class="cart-product cart-border">
+                                <div class="cart-product cart-border" id="alertCustomer">
                                     <h2><span>Thông tin khách hàng</span></h2>
-                                    <form id="frmCreateCustomer" method="post">
+                                    <div class="modal-alert-danger hide">
+
+
+                                    </div>
+                                    <form id="frmCreateCustomerInfo" method="post">
                                         <fieldset class="row g-3" style="padding-bottom: 20px">
                                             <div class="col-md-6">
                                                 <label class="form-label">Họ và tên:</label>
@@ -306,11 +311,21 @@
         })
     }
 
+
     function doUpdateTotalByButton() {
         $(".btn-update-total").on("click", function () {
             let id = $(this).data("id")
             getOrderItemsById(id).then(() => {
                 orderItem.quantityOrdered = $("#inputQuantity").val();
+                let inputQuantity = $("#inputQuantity").val();
+                if (inputQuantity < 0) {
+                    App.IziToast.showErrorAlert("Giỏ hàng tối thiểu là 1 sản phẩm")
+                    return
+                }
+                if (inputQuantity > 10) {
+                    App.IziToast.showErrorAlert("Giỏ hàng tối đa là 10 sản phẩm")
+                    return
+                }
                 $.ajax({
                     headers: {
                         "accept": "application/json",
@@ -339,8 +354,9 @@
                     </td>
                     <td class="text-left align-middle">
                         <div class="input-group btn-block" style="max-width: 134px;">
-                            <input style="width: 60px;" type="number" id="inputQuantity" max="10"
-                                   name="inputQuantity" value="${data.quantityOrdered}"
+                            <input style="width: 60px;" type="number" id="inputQuantity" max="10" min="1"
+                                   name="inputQuantity" oninput="this.value = Math.abs(this.value)"
+                                    value="${data.quantityOrdered}"
                                    class="form-control inputQuantity">
                             <span class="input-group-btn">
                                     <button data-id="${data.id}" id="btn-update-total"  type="button" title="" class="btn btn-primary btn-update-total" >
@@ -367,13 +383,13 @@
                     App.IziToast.showSuccessAlert("Cập nhật giá sản phẩm thành công");
                     currentRow.replaceWith(updateRow);
                     confirmDelete();
-                    doUpdateTotalByButton();
                 }).fail(() => {
                     App.SweetAlert.showErrorAlert("update Giá sản phẩm thất bại!");
                 })
             })
         })
     }
+
 
     function doBuyItem() {
         $("#btn-buy").on("click", () => {
@@ -409,26 +425,47 @@
                             data: JSON.stringify(order)
                         }).done((data) => {
                             App.IziToast.showSuccessAlert("Order Thành công");
-                            $(".OrderItem tbody").html("")
-                            drawAllItemsCustomerOrder();
+
+
                             doUpdateTotalByButton();
                             $("#fullNameCustomer").val("")
                             $("#phoneCustomer").val("")
                             $("#bOdCustomer").val("")
                             $("#addressCustomer").val("")
+                            $('body,html').animate({scrollTop: 0}, 750);
+                            setTimeout(function () {
+                                $(".OrderItem tbody").html("")
+                                drawAllItemsCustomerOrder();
+                                window.location.href= "/homecustomer/product";
+                            }, 1000);
                         }).fail(() => {
                             App.IziToast.showErrorAlert("Order Thất bại");
                         })
                     })
                 })
-            }).fail(() => {
-                App.IziToast.showErrorAlert("Order Thất bại");
+            }).fail((jqXHR) => {
+                console.log(jqXHR);
+
+                $('#alertCustomer .modal-alert-danger ').html('').removeClass('hide').addClass('show');
+                // if (jqXHR.responseJSON.message) {
+                //     let msg = jqXHR.responseJSON.message;
+                //     let str = `<label for="message" id="message-error" class="error">${msg}</label>`
+                //     $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
+                // } else
+                if (jqXHR.responseJSON) {
+                    let str = '';
+                    $.each(jqXHR.responseJSON, (key, item) => {
+                        str = `<label style="color: red;"  for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                        $('#alertCustomer .modal-alert-danger').removeClass("hide").addClass("show").append(str);
+                    })
+                }
             })
         })
     }
 
-    drawAllItemsCustomerOrder();
+
     doBuyItem();
+    drawAllItemsCustomerOrder();
     doUpdateTotalByButton();
 </script>
 </body>

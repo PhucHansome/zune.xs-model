@@ -9,6 +9,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Setter
 @Getter
@@ -17,6 +19,9 @@ import javax.persistence.Entity;
 @Accessors(chain = true)
 public class CategoryDTO {
 
+
+    @Min(1)
+    @Max(7)
     private Long id;
 
     private String name;

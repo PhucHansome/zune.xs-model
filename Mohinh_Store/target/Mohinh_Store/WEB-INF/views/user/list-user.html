@@ -162,52 +162,12 @@
         })
     }
 
-
     $("#btnCreate").on("click", function () {
         $("#frmCreateCustomer").submit();
     })
 
-    $(".btnUpdatePassword").on("click", () => {
-        let password = $("#passwordUp").val();
-        let passwordCon = $("#passwordCon").val();
-
-        console.log(password);
-
-        // if(password !== passwordCon){
-        //     App.SweetAlert.showErrorAlert("Mật khẩu phải giống nhau")
-        //     return
-        // }
-        if (password.length === 0 && passwordCon.length === 0) {
-            App.SweetAlert.showErrorAlert("Mật khẩu không được để trống")
-            return
-        }
-
-        user.id = $("#idUser").val();
-        user.password = password;
-        $.ajax({
-            headers: {
-                "accept": "application/json",
-                "content-type": "application/json"
-            },
-            type: "PUT",
-            url: "http://localhost:8080/api/user/update",
-            data: JSON.stringify(user)
-        }).done(() => {
-            App.SweetAlert.showSuccessAlert("Bạn đã đổi mật khẩu thành công!!")
-        }).fail((jqXHR) => {
-            $('#modalUpdatePassword .alert-danger ').html('').removeClass('hide').addClass('show');
-            if (jqXHR.responseJSON.message) {
-                let msg = jqXHR.responseJSON.message;
-                let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-                $('#modalUpdatePassword .alert-danger').append(str)
-            } else if (jqXHR.responseJSON) {
-                let str = '';
-                $.each(jqXHR.responseJSON, (key, item) => {
-                    str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
-                    $('#modalUpdatePassword .alert-danger').append(str);
-                })
-            }
-        })
+    $("#btnUpdatePassword").on("click", () => {
+        $("#frmUpdatePassword").submit();
     })
 
     function handleShowCreateModal() {
@@ -285,17 +245,17 @@
 
     function doCreate() {
         let username = $("#EmailCre").val();
-        let password = $("#password").val();
+        let passwordCre = $("#passwordCre").val();
+        let passwordConCre = $("#passwordConCre").val();
         let roleCode = $("#role :selected").text();
         let roleId = $("#role").val();
-
 
         role.id = roleId;
         role.code = roleCode;
 
         delete user.id
         user.username = username;
-        user.password = password;
+        user.password = passwordCre;
         user.role = role
         $.ajax({
             headers: {
@@ -325,6 +285,9 @@
                     </tr>
                     `
             $('#tableListUsers tbody').prepend(str);
+            $("#EmailCre").val("")
+            $("#passwordCre").val("")
+            $("#passwordConCre").val()
             handleShowCreateModal();
             handleShowUpdatePassWord()
             handleblock()
@@ -347,6 +310,36 @@
         })
     }
 
+    function doUpdatePassword(){
+        let password = $("#passwordUp").val();
+
+        user.id = $("#idUser").val();
+        user.password = password;
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "PUT",
+            url: "http://localhost:8080/api/user/update",
+            data: JSON.stringify(user)
+        }).done(() => {
+            App.SweetAlert.showSuccessAlert("Bạn đã đổi mật khẩu thành công!!")
+        }).fail((jqXHR) => {
+            $('#modalUpdatePassword .modal-alert-danger').html('').removeClass('hide').addClass('show');
+            if (jqXHR.responseJSON.message) {
+                let msg = jqXHR.responseJSON.message;
+                let str = `<label for="message" id="message-error" class="error">${msg}</label>`
+                $('#modalUpdatePassword .modal-alert-danger').append(str)
+            } else if (jqXHR.responseJSON) {
+                let str = '';
+                $.each(jqXHR.responseJSON, (key, item) => {
+                    str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                    $('#modalUpdatePassword .modal-alert-danger').append(str);
+                })
+            }
+        })
+    }
 
     $('#frmCreateCustomer').validate({
         "rules": {
@@ -356,8 +349,14 @@
                 minlength: 3,
                 maxlength: 50,
             },
-            "password": {
+            "passwordCre": {
                 required: true,
+                minlength: 6,
+                maxlength: 30,
+            },
+            "passwordConCre": {
+                required: true,
+                equalTo : "#passwordCre",
                 minlength: 6,
                 maxlength: 30,
             }
@@ -365,12 +364,19 @@
         "messages": {
             "EmailCre": {
                 required: "vui lòng nhập Email!",
-                email: "Vui lòng nhập đúng định dạng email (VD: phucnguyen@gmail.com)!",
+                email: "Vui lòng nhập đúng định dạng Email (VD: phucnguyen@gmail.com)!",
                 minlength: $.validator.format("Email tối thiểu {0} ký tự!"),
                 maxlength: $.validator.format("Email tối đa {0} ký tự"),
             },
-            "password": {
-                required: "Vui lòng nhập password",
+            "passwordCre": {
+                required: "Vui lòng nhập Password",
+                minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
+                maxlength: $.validator.format("Password tối đa {0} ký tự!"),
+            }
+            ,
+            "passwordConCre": {
+                required: "Vui lòng nhập Password Confirm",
+                equalTo : "Mật khẩu phải giống nhau",
                 minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
                 maxlength: $.validator.format("Password tối đa {0} ký tự!"),
             }
@@ -393,6 +399,50 @@
         }
     })
 
+    $('#frmUpdatePassword').validate({
+        "rules": {
+            "passwordUp": {
+                required: true,
+                minlength: 3,
+                maxlength: 50,
+            },
+            "passwordConUp": {
+                required: true,
+                equalTo : "#passwordUp",
+                minlength: 6,
+                maxlength: 30,
+            }
+        },
+        "messages": {
+            "passwordUp": {
+                required: "Vui lòng nhập Password!",
+                minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
+                maxlength: $.validator.format("Password tối đa {0} ký tự"),
+            },
+            "passwordConUp": {
+                required: "Vui lòng nhập Password Confirm",
+                equalTo : "Mật khẩu phải giống nhau",
+                minlength: $.validator.format("Password Confirm tối thiểu {0} ký tự!"),
+                maxlength: $.validator.format("Password Confirm tối đa {0} ký tự!"),
+            }
+        },
+        errorLabelContainer: "#modalUpdatePassword .modal-alert-danger",
+        errorPlacment: function (error, element) {
+            error.appendTo("#modalUpdatePassword .modal-alert-danger")
+        },
+        showErrors: function (errorMap, errorList) {
+            if (this.numberOfInvalids() > 0) {
+                $("#modalUpdatePassword .modal-alert-danger").removeClass("hide").addClass("show");
+            } else {
+                $("#modalUpdatePassword .modal-alert-danger").removeClass("show").addClass("hide").empty();
+                $("#frmUpdatePassword .input.error").removeClass("error");
+            }
+            this.defaultShowErrors();
+        },
+        submitHandler: function () {
+            doUpdatePassword();
+        }
+    })
 
     handleShowUpdatePassWord()
     handleShowCreateModal()

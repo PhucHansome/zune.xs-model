@@ -15,11 +15,13 @@ import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +44,8 @@ public class OrderRestController {
     @GetMapping("/allorder")
     public ResponseEntity<?>showListOrder(){
         List<OrderDTO> orderList = orderService.findAllOrderDTO();
+        String pattern = "yyyy-MM-dd";
+
         return new ResponseEntity<>(orderList,HttpStatus.OK);
     }
 
@@ -56,7 +60,7 @@ public class OrderRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> doCreate(@RequestBody OrderDTO orderDTO, BindingResult bindingResult){
+    public ResponseEntity<?> doCreate(@Validated @RequestBody OrderDTO orderDTO, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }
@@ -71,8 +75,11 @@ public class OrderRestController {
             orderItemsService.softDelete(optionalOrder.get());
             orderDTO.setStatus("Waiting");
             optionalProduct.get().setQuantityProduct(new BigDecimal(String.valueOf(orderDTO.getOrderItem().getProduct().getQuantityProduct().subtract(orderDTO.getOrderItem().getQuantityOrdered()))));
-            productService.save(optionalProduct.get());
+            if (Integer.parseInt(String.valueOf(optionalProduct.get().getQuantityProduct())) < 0){
+                return new ResponseEntity<>("Số lượng không đủ",HttpStatus.BAD_REQUEST);
+            }
             Order order = orderService.save(orderDTO.toOrder());
+            productService.save(optionalProduct.get());
             return new ResponseEntity<>(order.toOrderDTO(), HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>("Error Element", HttpStatus.BAD_REQUEST);
@@ -85,6 +92,17 @@ public class OrderRestController {
             return appUtils.mapErrorToResponse(bindingResult);
         }
         orderDTO.setStatus("Complete");
+        Order updateOrder = orderService.save(orderDTO.toOrder());
+
+        return new ResponseEntity<>(updateOrder.toOrderDTO(), HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/cancelOrder")
+    public  ResponseEntity<?> doCancel(@RequestBody OrderDTO orderDTO, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            return appUtils.mapErrorToResponse(bindingResult);
+        }
+        orderDTO.setStatus("Cancel Order");
         Order updateOrder = orderService.save(orderDTO.toOrder());
 
         return new ResponseEntity<>(updateOrder.toOrderDTO(), HttpStatus.ACCEPTED);

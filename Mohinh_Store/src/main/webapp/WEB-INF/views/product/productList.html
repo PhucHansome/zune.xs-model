@@ -118,10 +118,8 @@
 
 
 <script>
-
     let product = new Product();
     let category = new Category();
-
 
     function loadAllProduct() {
         $.ajax({
@@ -147,8 +145,8 @@
                     currency: 'VND'
                 }).format(product.priceProduct)}</td>
                 <td class="align-middle text-center">${product.productDescription}</td>
-                <td class="align-middle text-center">${product.createdAt}</td>
-                <td class="align-middle text-center">${product.updatedAt}</td>
+                <td class="align-middle text-center">${formatDate(product.createdAt)}</td>
+                <td class="align-middle text-center">${formatDate(product.updatedAt)}</td>
                 <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-secondary btn_edit"  id="btn_edit"><i class="fa-solid fa-pen-to-square"></i></button></td>
                  <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-danger btn-delete"  id="btn-delete"><i class="fa-solid fa-trash"></i></button></td>
             </tr>
@@ -193,7 +191,7 @@
                 $("#idProductUp").val(product.id);
                 $("#productCodeUp").val(product.productCode);
                 $("#productNameUp").val(product.productName);
-                $("#quantityProductUp").val(product.priceProduct)
+                $("#quantityProductUp").val(product.quantityProduct)
                 $("#priceProductUp").val(product.priceProduct)
                 $("#urlUp").val(product.image);
                 $("#descriptionProductUp").val(product.productDescription);
@@ -221,10 +219,35 @@
         })
     }
 
-    $("#btnCreate").on("click", () => {
+    $("#btnCreate").on("click", function () {
+        $("#frmCreateProduct").submit();
+    })
+
+    $("#btn-update-product").on("click", function () {
+        $("#frmUpdateProduct").submit();
+    })
+
+    function doDelete(customerId) {
+        $.ajax({
+            type: "DELETE",
+            url: "http://localhost:8080/api/product/" + customerId,
+        })
+            .done(() => {
+                // getAllCustomer();
+
+                $("#tr_" + customerId).remove();
+
+                App.SweetAlert.showSuccessAlert("Customer has been deleted. ")
+
+
+            }).fail(() => {
+            App.SweetAlert.showErrorAlert("Customer information invailid");
+        })
+    }
+
+    function doCreate() {
         category.id = $("#categoryCre").val();
         category.name = $("#categoryCre :selected").text();
-
         delete product.id;
         product.productCode = $("#productCodeCre").val();
         product.productName = $("#productNameCre").val();
@@ -233,7 +256,6 @@
         product.productDescription = $("#descriptionProductCre").val();
         product.priceProduct = $("#priceProductCre").val();
         product.image = $("#urlCre").val();
-        // product.createdAt= new Date();
         $.ajax({
             headers: {
                 "accept": "application/json",
@@ -259,8 +281,8 @@
                 currency: 'VND'
             }).format(product.priceProduct)}</td>
                 <td class="align-middle text-center">${product.productDescription}</td>
-                <td class="align-middle text-center">Chưa cập nhật</td>
-                <td class="align-middle text-center">Chưa cập nhật</td>
+                <td class="align-middle text-center">${formatDate(product.createdAt)}</td>
+                <td class="align-middle text-center">${formatDate(product.updatedAt)}</td>
                 <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-secondary btn_edit"  id="btn_edit"><i class="fa-solid fa-pen-to-square"></i></button></td>
              <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-danger btn-delete"  id="btn-delete"><i class="fa-solid fa-trash"></i></button></td>
             </tr>
@@ -270,24 +292,29 @@
             handleShowUpdateProduct();
             handleShowCreateProduct();
             handlerShowConfirmDelete()
-
+            $("#productCodeCre").val("")
+            $("#productNameCre").val("")
+            $("#quantityProductCre").val("")
+            $("#descriptionProductCre").val("");
+            $("#priceProductCre").val("")
+            $("#urlCre").val("")
         }).fail((jqXHR) => {
-            $('#modal-create-product .alert-danger ').html('').removeClass('hide').addClass('show');
+            $('#modal-create-product .modal-alert-danger ').html('').removeClass('hide').addClass('show');
             if (jqXHR.responseJSON.message) {
                 let msg = jqXHR.responseJSON.message;
                 let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-                $('#modal-create-product .alert-danger').append(str)
+                $('#modal-create-product .modal-alert-danger').append(str)
             } else if (jqXHR.responseJSON) {
                 let str = '';
                 $.each(jqXHR.responseJSON, (key, item) => {
                     str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
-                    $('#modal-create-product .alert-danger').append(str);
+                    $('#modal-create-product .modal-alert-danger').append(str);
                 })
             }
         })
-    })
+    }
 
-    $("#btn-update-product").on("click", () => {
+    function doUpdate() {
         category.id = $("#categoryUp").val();
         category.name = $("#categoryUp :selected").text();
 
@@ -326,8 +353,8 @@
                 currency: 'VND'
             }).format(product.priceProduct)}</td>
                         <td class="align-middle text-center">${product.productDescription}</td>
-                        <td class="align-middle text-center">Chưa cập nhật</td>
-                        <td class="align-middle text-center">Chưa cập nhật</td>
+                        <td class="align-middle text-center">${formatDate(product.createdAt)}</td>
+                        <td class="align-middle text-center">${formatDate(product.updatedAt)}</td>
                         <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-secondary btn_edit"  id="btn_edit"><i class="fa-solid fa-pen-to-square"></i></button></td>
                      <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-danger btn-delete"  id="btn-delete"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
@@ -337,40 +364,218 @@
             handleShowCreateProduct();
             handleShowUpdateProduct();
             handlerShowConfirmDelete();
-
+            $("#idProductUp").val("");
+            $("#productCodeUp").val("");
+            $("#productNameUp").val("");
+            $("#quantityProductUp").val("");
+            $("#descriptionProductUp").val("")
+            $("#priceProductUp").val("");
+            $("#urlUp").val("");
         }).fail((jqXHR) => {
-            $('#modal-update-product .alert-danger ').html('').removeClass('hide').addClass('show');
-            if (jqXHR.responseJSON.message) {
-                let msg = jqXHR.responseJSON.message;
-                let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-                $('#modal-update-product .alert-danger').append(str)
-            } else if (jqXHR.responseJSON) {
+            console.log(jqXHR);
+            $('#modal-update-product .modal-alert-danger ').html('').removeClass('hide').addClass('show');
+            // if (jqXHR.responseJSON.message) {
+            //     let msg = jqXHR.responseJSON.message;
+            //     let str = `<label for="message" id="message-error" class="error">${msg}</label>`
+            //     $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
+            // } else
+                if (jqXHR.responseJSON) {
                 let str = '';
                 $.each(jqXHR.responseJSON, (key, item) => {
-                    str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
-                    $('#modal-update-product .alert-danger').append(str);
+                    str = `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                    $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
                 })
             }
         })
+    }
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        if (day === null || month === null || year === null) {
+            return "chưa cập nhật";
+        }
+        return [day, month, year].join('-');
+    }
+
+    $('#frmCreateProduct').validate({
+        "rules": {
+            "productCodeCre": {
+                required: true,
+                minlength: 2,
+                maxlength: 10,
+            },
+            "productNameCre": {
+                required: true,
+                minlength: 3,
+                maxlength: 250,
+            },
+            "quantityProductCre": {
+                required: true,
+                number: true,
+                min: 1,
+                max: 999,
+            },
+            "priceProductCre": {
+                required: true,
+                number: true,
+                min: 10000,
+                max: 99999999,
+            },
+            "urlCre": {
+                required: true,
+                minlength: 5,
+            },
+            "descriptionProductCre": {
+                required: true,
+                minlength: 3,
+                maxlength: 250,
+            }
+        },
+        "messages": {
+            "productCodeCre": {
+                required: "Vui Lòng Nhập Mã Sản Phẩm!",
+                minlength: $.validator.format("Mã Sản Phẩm tối thiểu {0} ký tự!"),
+                maxlength: $.validator.format("Mã Sản Phẩm tối đa {0} ký tự!"),
+            },
+            "productNameCre": {
+                required: "Vui lòng nhập Tên Sản Phẩm!",
+                minlength: $.validator.format("Tên sản phẩm tối thiểu {0} ký tự!"),
+                maxlength: $.validator.format("Tên sản phẩm tối đa {0} ký tự!"),
+            }
+            ,
+            "quantityProductCre": {
+                required: "Vui lòng nhập vào số lượng!",
+                number: "Vui lòng chỉ nhập số!",
+                min: $.validator.format("số lượng tối thiểu {0} sản phẩm!"),
+                max: $.validator.format("Số lượng tối đa {0} sản phẩm!"),
+            },
+            "priceProductCre": {
+                required: "Vui lòng nhập số tiền sản phẩm!",
+                number: "Vui lòng chỉ nhập số!",
+                min: $.validator.format("Giá sản phẩm tối thiểu {0} Việt nam đồng!"),
+                max: $.validator.format("Giá sản phẩm tối đa {0} Việt nam đồng!"),
+            }
+            ,
+            "urlCre": {
+                required: "Vui lòng nhập Url Ảnh Sản Phẩm!",
+                minlength: $.validator.format("Url tối thiểu {0} ký tự!"),
+            },
+            "descriptionProductCre": {
+                required: "Vui lòng nhập mô tả sản phẩm!",
+                minlength: $.validator.format("Mô tả sản phẩm tối thiểu {0} ký tự!"),
+                maxlength: $.validator.format("Mô tả sản phẩm tối đa {0} ký tự!"),
+            }
+        },
+        errorLabelContainer: "#modal-create-product .modal-alert-danger",
+        errorPlacment: function (error, element) {
+            error.appendTo("#modal-create-product .modal-alert-danger")
+        },
+        showErrors: function (errorMap, errorList) {
+            if (this.numberOfInvalids() > 0) {
+                $("#modal-create-product .modal-alert-danger").removeClass("hide").addClass("show");
+            } else {
+                $("#modal-create-product .modal-alert-danger").removeClass("show").addClass("hide").empty();
+                $("#frmCreateProduct .input.error").removeClass("error");
+            }
+            this.defaultShowErrors();
+        },
+        submitHandler: function () {
+            doCreate();
+        }
     })
 
-    function doDelete(customerId) {
-        $.ajax({
-            type: "DELETE",
-            url: "http://localhost:8080/api/product/" + customerId,
-        })
-            .done(() => {
-                // getAllCustomer();
-
-                $("#tr_" + customerId).remove();
-
-                App.SweetAlert.showSuccessAlert("Customer has been deleted. ")
-
-
-            }).fail(() => {
-            App.SweetAlert.showErrorAlert("Customer information invailid");
-        })
-    }
+    $('#frmUpdateProduct').validate({
+        "rules": {
+            "productCodeUp": {
+                required: true,
+                minlength: 2,
+                maxlength: 10,
+            },
+            "productNameUp": {
+                required: true,
+                minlength: 3,
+                maxlength: 250,
+            },
+            "quantityProductUp": {
+                required: true,
+                number: true,
+                min: 1,
+                max: 999,
+            },
+            "priceProductUp": {
+                required: true,
+                number: true,
+                min: 10000,
+                max: 99999999,
+            },
+            "urlUp": {
+                required: true,
+                minlength: 5,
+            },
+            "descriptionProductUp": {
+                required: true,
+                minlength: 3,
+                maxlength: 250,
+            }
+        },
+        "messages": {
+            "productCodeUp": {
+                required: "Vui Lòng Nhập Mã Sản Phẩm!",
+                minlength: $.validator.format("Mã Sản Phẩm tối thiểu {0} ký tự!"),
+                maxlength: $.validator.format("Mã Sản Phẩm tối đa {0} ký tự"),
+            },
+            "productNameUp": {
+                required: "Vui lòng nhập Tên Sản Phẩm!",
+                minlength: $.validator.format("Tên sản phẩm tối thiểu {0} ký tự!"),
+                maxlength: $.validator.format("Tên sản phẩm tối đa {0} ký tự!"),
+            }
+            ,
+            "quantityProductUp": {
+                required: "Vui lòng nhập số lượng sản phẩm!",
+                number: "Vui lòng chỉ nhập số!",
+                min: $.validator.format("số lượng tối thiểu {0} sản phẩm!"),
+                max: $.validator.format("Số lượng tối đa {0} sản phẩm!"),
+            },
+            "priceProductUp": {
+                required: "Vui lòng nhập số tiền sản phẩm!",
+                number: "Vui lòng chỉ nhập số!",
+                min: $.validator.format("Giá sản phẩm tối thiểu {0} Việt nam đồng!"),
+                max: $.validator.format("Giá sản phẩm tối đa {0} Việt nam đồng!"),
+            }
+            ,
+            "urlUp": {
+                required: "Vui lòng nhập Url Ảnh Sản Phẩm!",
+                minlength: $.validator.format("Url tối thiểu {0} ký tự!"),
+            },
+            "descriptionProductUp": {
+                required: "Vui lòng nhập mô tả sản phẩm!",
+                minlength: $.validator.format("Mô tả sản phẩm tối thiểu {0} ký tự!"),
+                maxlength: $.validator.format("Mô tả sản phẩm tối đa {0} ký tự!"),
+            }
+        },
+        errorLabelContainer: "#modal-update-product .modal-alert-danger",
+        errorPlacment: function (error, element) {
+            error.appendTo("#modal-update-product .modal-alert-danger")
+        },
+        showErrors: function (errorMap, errorList) {
+            if (this.numberOfInvalids() > 0) {
+                $("#modal-update-product .modal-alert-danger").removeClass("hide").addClass("show");
+            } else {
+                $("#modal-update-product .modal-alert-danger").removeClass("show").addClass("hide").empty();
+                $("#frmUpdateProduct .input.error").removeClass("error");
+            }
+            this.defaultShowErrors();
+        },
+        submitHandler: function () {
+            doUpdate();
+        }
+    })
 
     handlerShowConfirmDelete()
     handleShowUpdateProduct();

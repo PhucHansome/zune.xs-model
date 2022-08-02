@@ -12,10 +12,7 @@ import com.cg.service.user.IUserService;
 import com.cg.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,7 +66,10 @@ public class AuthRestController {
             throw new DataInputException("Invalid account role");
         }
 
+
         try {
+            userDTO.setStatus("Active");
+
             User newUser =  userService.save(userDTO.toUser());
 
             return new ResponseEntity<>(newUser, HttpStatus.CREATED);
@@ -80,7 +80,13 @@ public class AuthRestController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody UserDTO user) {
+        Optional<UserDTO> userDTO= userService.findUserDTOByUsername(user.getUsername());
+
+        if(userDTO.get().getStatus().equals("Block")){
+            return new ResponseEntity<>("tài khoản đã bị khóa", HttpStatus.FORBIDDEN);
+        }
+
         Authentication authentication  =  authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
@@ -97,6 +103,8 @@ public class AuthRestController {
                 currentUser.getUsername(),
                 userDetails.getAuthorities()
         );
+
+
 
         ResponseCookie springCookie = ResponseCookie.from("JWT", jwt)
                 .httpOnly(false)

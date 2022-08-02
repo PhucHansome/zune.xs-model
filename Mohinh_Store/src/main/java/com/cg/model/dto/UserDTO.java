@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
@@ -22,7 +23,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class UserDTO  {
+public class UserDTO   {
 
     private Long id;
 
@@ -38,24 +39,26 @@ public class UserDTO  {
     @Valid
     private RoleDTO role;
 
-    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy ", timezone = "Asia/Ho_Chi_Minh")
     private Date createdAt;
 
-    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy ", timezone = "Asia/Ho_Chi_Minh")
     private Date updatedAt;
 
+    @NotNull
+    private String status;
 
-    public UserDTO(Long id, String username) {
+    public UserDTO(Long id, String username, String status) {
         this.id = id;
         this.username = username;
+        this.status = status;
     }
 
 
 
-    public UserDTO(Long id, String username, Role role) {
+    public UserDTO(Long id, String username, Role role, String status) {
         this.id = id;
         this.username = username;
         this.role = role.toRoleDTO();
+        this.status = status;
     }
 
 
@@ -65,9 +68,8 @@ public class UserDTO  {
                 .setUsername(username)
                 .setPassword(password)
                 .setRole(role.toRole())
-//                .setStatus(status)
+                .setStatus(status)
                 ;
 
     }
-
 }

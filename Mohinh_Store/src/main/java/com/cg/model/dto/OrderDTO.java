@@ -25,13 +25,13 @@ public class OrderDTO {
 
     private Date shippedDate;
 
-   private UserDTO user;
+    private UserDTO user;
 
-   private CustomerInfoDTO customerInfo;
+    private CustomerInfoDTO customerInfo;
 
-   private OrderItemsDTO orderItem;
+    private OrderItemsDTO orderItem;
 
-   private String status;
+    private String status;
 
     public OrderDTO(Long id, Date shippedDate, User user, CustomerInfo customerInfo, OrderItem orderItem, String status) {
         this.id = id;
@@ -42,7 +42,7 @@ public class OrderDTO {
         this.status = status;
     }
 
-    public Order toOrder(){
+    public Order toOrder() {
         return new Order()
                 .setId(id)
                 .setShippedDate(shippedDate)
