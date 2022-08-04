@@ -6,6 +6,8 @@
 <!--[if (gt IE 9)|!(IE)]><!-->
 <html dir="ltr" lang="vi">
 <!--<![endif]-->
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <th:block th:replace="/customer/layout_customer/header_customer :: header-first"/>
 <style>
     .cart {
@@ -144,6 +146,8 @@
         </div>
     </div>
 
+
+
     <div style="font-size: 0" class="row" th:object="${user}">
         <span id="userNameLogin" th:text="${user}"></span>
     </div>
@@ -179,7 +183,7 @@
         })
     </script>
 </div>
-<th:block th:replace="/customer/layout_customer/footer-customer :: footer"/>
+<th:block th:replace="/customer/layout_customer/footer-script-customer :: footer"/>
 
 <script src="/assets/js/jquery-3.6.0.min.js"></script>
 <script src="/assets/js/jquery.validate-1.19.3.min.js"></script>
@@ -208,17 +212,16 @@
         }).done(function(data) {
             $.each(data, (i, item) => {
                 product = item;
-                console.log("product " +i  +product);
                 console.log(data);
                 let str = `
                 <div class="col-xs-12 col-sm-6 col-md-4">
                         <div class="product-item">
                             <div class="img">
-                                <a href="#" title="RAW SUDE SHIRT"><img src="${product.image}" class="img-responsive main-img main" alt="RAW SUDE SHIRT"></a>
-                                <a href="#" title="RAW SUDE SHIRT"><img src="${product.image}" class="img-responsive sub-img" alt="RAW SUDE SHIRT"></a>
+                                <h6  title="RAW SUDE SHIRT" data-id="${product.id}" id="destcriptionProduct" class="destcriptionProduct"><img src="${product.image}" class="img-responsive main-img main" alt="RAW SUDE SHIRT"></h6>
+                                <h6  title="RAW SUDE SHIRT" data-id="${product.id}" id="destcriptionProduct" class="destcriptionProduct"  ><img src="${product.image}" class="img-responsive sub-img" alt="RAW SUDE SHIRT"></h6>
                             </div>
                             <div class="info">
-                                <h4><a href="#" title="RAW SUDE SHIRT">${product.productName}</a>
+                                <h4><a href="javascript:void(0);" id="DestcriptionProduct" class="DestcriptionProduct" title="RAW SUDE SHIRT">${product.productName}</a>
                                 </h4>
                             </div>
                             <div class="box-price">
@@ -237,9 +240,9 @@
                 $("#products-items").prepend(str);
                 $('#top-up').off()
                 addToCart();
+
             })
-
-
+            descriptionProductClick();
         }).fail(() => {
             App.SweetAlert.showErrorAlert("Customer Errors")
         })
@@ -285,7 +288,7 @@
                     $('body,html').animate({scrollTop: 0}, 750);
                     setTimeout(function () {
                         App.IziToast.showSuccessAlert("Thêm vào giỏ hàng thành công!")
-                    }, 1000);
+                    }, 500);
                 }).fail(()=>{
                     App.IziToast.showErrorAlert("Thêm vào giỏ hàng thất bại");
                 })
@@ -312,4 +315,5 @@
     loadAllProduct();
 </script>
 </body>
+</html>
 </html>

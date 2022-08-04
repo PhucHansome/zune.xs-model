@@ -21,6 +21,8 @@ public interface IUserService extends IGeneralService<User>, UserDetailsService 
 
     User saveNoPassword(User user);
 
+    Optional<UserDTO> findUserDTOById(Long id);
+
 //    boolean existsByEmailAndIdIsNot(String email,Long id);
 
 }

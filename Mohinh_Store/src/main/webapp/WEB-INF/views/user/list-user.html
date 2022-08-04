@@ -63,12 +63,12 @@
                         <table id="tableListUsers" class="table table-hover">
                             <thead class="thead-dark">
                             <tr>
-                                <th></th>
-                                <th>#</th>
-                                <th>EMAIL</th>
-                                <th>ROLE</th>
-                                <th>STATUS</th>
-                                <th colspan="3">ACTION</th>
+                                <th class="align-middle text-center ">img</th>
+                                <th class="align-middle text-center ">#</th>
+                                <th class="align-middle text-center ">EMAIL</th>
+                                <th class="align-middle text-center ">ROLE</th>
+                                <th class="align-middle text-center ">STATUS</th>
+                                <th class="align-middle text-center " colspan="4">ACTION</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -108,6 +108,8 @@
 
 <th:block th:replace="/user/modal-create-information :: modal-create-information"/>
 
+<th:block th:replace="/user/modal_update_information :: modal-update-information"/>
+
 <script>
 
     let user = new User();
@@ -124,30 +126,35 @@
             console.log(data)
             $.each(data, (i, item) => {
                 console.log(item.role.code);
-                let str =
-                    `
+                let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
+                let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
+                let str = `
                      <tr id="tr_${item.id}">
-                        <td></td>
-                        <td>${item.id}</td>
-                        <td>${item.username}</td>
-                        <td><b>${item.role.code}</b></td>
-                        <td><b>${item.status}</b></td>
-                        <td>
-                        <button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active">Active</button>
-                        <button class="btn btn-outline-danger" data-id="${item.id}" id="btn-block">block</button>
-                        <button type="button" data-id="${item.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button></td>
+                        <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
+                        <td class="align-middle text-center ">${item.id}</td>
+                        <td class="align-middle text-center ">${item.username}</td>
+                        <td class="align-middle text-center "><b>${item.role.code}</b></td>
+                        <td class="align-middle text-center "><b>${item.status}</b></td>
+                        <td class="align-middle text-center ">
+                            ${item.status === 'Active' ? strBlock : strActive}
+                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
+                        </td>
                     </tr>
-                    `
+                `
                 $('#tableListUsers tbody').prepend(str);
-                handleShowCreateModal();
-                handleShowUpdatePassWord();
-                handleActive();
-                handleBlock();
             })
-        }).fail(() => {
-            App.SweetAlert.showErrorAlert("Customer Errors")
+
+            // <button data-id="${item.id}" style="margin-right: 10px"
+            // className="btn btn-outline-success btn-active">Active</button>
+            // <button className="btn btn-outline-danger btn-block" data-id="${item.id}">block</button>
+
+            groupHandle();
+
+        }).fail((jqXHR) => {
+            console.log(jqXHR)
         })
     }
 
@@ -175,6 +182,10 @@
         $("#frmUpdatePassword").submit();
     })
 
+    $("#btnUpdateInformation").on("click", () => {
+        $("#frmUpdateFullInformation").submit();
+    })
+
     function handleShowCreateModal() {
         $("#modalAdd").on("click", () => {
             $("#modalCreateUser").modal('show');
@@ -182,7 +193,7 @@
     }
 
     function handleShowUpdatePassWord() {
-        $("#btnChangePassWord").on("click", function () {
+        $(".btnChangePassWord").on("click", function () {
             let id = $(this).data("id");
             getUserById(id).then(() => {
                 $("#modalUpdatePassword").modal("show");
@@ -191,8 +202,20 @@
         })
     }
 
+    function handleShowUpdateRemaining() {
+        $(".btn-updateRemaining").on("click", function () {
+            let id = $(this).data("id");
+            getUserById(id).then(() => {
+                $("#modalUpdateFullUser").modal("show");
+                $("#idUserUp").val(user.id);
+                $("#imageUp").val(user.image);
+                $("#EmailUp").val(user.username);
+            })
+        })
+    }
+
     function handleActive() {
-        $("#btn-active").on("click", function () {
+        $(".btn-active").on("click", function () {
             let id = $(this).data("id");
             getUserById(id).then(() => {
                 $.ajax({
@@ -203,40 +226,41 @@
                     type: "PUT",
                     url: "http://localhost:8080/api/user/active",
                     data: JSON.stringify(user)
-                }).done((data) => {
-                    user = data;
+                }).done((item) => {
+                    user = item;
                     let currentRow = $('#tr_' + user.id);
-                    let updateRow = `
 
-                     <tr id="tr_${user.id}">
-                        <td></td>
-                        <td>${user.id}</td>
-                        <td>${user.username}</td>
-                        <td><b>${user.role.code}</b></td>
-                        <td>${user.status}</td>
-                        <td>
-                        <button data-id="${user.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active">Active</button>
-                        <button class="btn btn-outline-danger" data-id="${user.id}" id="btn-block">block</button>
-                        <button type="button" data-id="${user.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button></td>
+                    let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
+                    let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
+                    let updateRow = `
+                     <tr id="tr_${item.id}">
+                        <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
+                        <td class="align-middle text-center ">${item.id}</td>
+                        <td class="align-middle text-center ">${item.username}</td>
+                        <td class="align-middle text-center "><b>${item.role.code}</b></td>
+                        <td class="align-middle text-center "><b>${item.status}</b></td>
+                        <td class="align-middle text-center ">
+                            ${item.status === 'Active' ? strBlock : strActive}
+                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
+                        </td>
                     </tr>
-            `
+                    `
                     App.IziToast.showSuccessAlert("Tài Khoản đã được Active!");
                     currentRow.replaceWith(updateRow);
-                    handleShowUpdatePassWord()
-                    handleShowCreateModal()
-                    handleActive();
-                    handleBlock();
-                }).fail(() => {
-                    App.IziToast.showErrorAlert("False")
+                    unBindAll()
+                    groupHandle()
+                }).fail((jqXHR) => {
+                    console.log(jqXHR)
                 })
             })
         })
     }
 
     function handleBlock() {
-        $("#btn-block").on("click", function () {
+        $(".btn-blockk").on("click", function () {
             let id = $(this).data("id");
             getUserById(id).then(() => {
                 $.ajax({
@@ -247,34 +271,41 @@
                     type: "PUT",
                     url: "http://localhost:8080/api/user/block",
                     data: JSON.stringify(user)
-                }).done((data) => {
-                    user = data;
+                }).done((item) => {
+                    user = item;
                     let currentRow = $('#tr_' + user.id);
+                    let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
+                    let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
                     let updateRow = `
-
-                     <tr id="tr_${user.id}">
-                        <td></td>
-                        <td>${user.id}</td>
-                        <td>${user.username}</td>
-                        <td><b>${user.role.code}</b></td>
-                        <td><b>${user.status}</b></td>
-                        <td>
-                        <button data-id="${user.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active">Active</button>
-                        <button class="btn btn-outline-danger" data-id="${user.id}" id="btn-block">block</button>
-                        <button type="button" data-id="${user.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button></td>
+                     <tr id="tr_${item.id}">
+                        <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
+                        <td class="align-middle text-center ">${item.id}</td>
+                        <td class="align-middle text-center ">${item.username}</td>
+                        <td class="align-middle text-center "><b>${item.role.code}</b></td>
+                        <td class="align-middle text-center "><b>${item.status}</b></td>
+                        <td class="align-middle text-center ">
+                            ${item.status === 'Active' ? strBlock : strActive}
+                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
+                        </td>
                     </tr>
-            `
+                    `
                     App.IziToast.showSuccessAlert("Tài khoản đã bị block");
                     currentRow.replaceWith(updateRow);
-                    handleShowUpdatePassWord()
-                    handleShowCreateModal()
-                    handleActive();
-                    handleBlock();
-                }).fail(() => {
-                    App.IziToast.showErrorAlert("False")
-
+                    unBindAll()
+                    groupHandle()
+                }).fail((jqXHR) => {
+                    // $('#modalCreateUser .modal-alert-danger ').html('').removeClass('hide').addClass('show');
+                    // if (jqXHR.responseJSON) {
+                    //     let str = '';
+                    //     $.each(jqXHR.responseJSON, (key, item) => {
+                    //         str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                    //         $('#modalCreateUser .modal-alert-danger').append(str);
+                    //     })
+                    // }
+                    console.log(jqXHR)
                 })
             })
         })
@@ -283,7 +314,6 @@
     function doCreate() {
         let username = $("#EmailCre").val();
         let passwordCre = $("#passwordCre").val();
-        let passwordConCre = $("#passwordConCre").val();
         let roleCode = $("#role :selected").text();
         let roleId = $("#role").val();
 
@@ -293,7 +323,8 @@
         delete user.id
         user.username = username;
         user.password = passwordCre;
-        user.role = role
+        user.role = role;
+        user.image = $("#imageCre").val()
         $.ajax({
             headers: {
                 "accept": "application/json",
@@ -302,24 +333,25 @@
             type: "POST",
             url: "http://localhost:8080/api/auth/register",
             data: JSON.stringify(user)
-        }).done((data) => {
+        }).done((item) => {
             $("#modalCreateUser").modal('hide');
             App.SweetAlert.showSuccessAlert("Đăng ký thành công!!");
 
-            let str =
-                `
-                     <tr id="tr_${data.id}">
-                        <td></td>
-                        <td>${data.id}</td>
-                        <td>${data.username}</td>
-                        <td><b>${data.role.code}</b></td>
-                        <td>${data.status}</td>
-                        <td>
-                         <button data-id="${data.id}" style="margin-right: 10px" class="btn btn-outline-success" id="btn-active">Active</button>
-                        <button class="btn btn-outline-danger" data-id="${data.id}" id="btn-block">block</button>
-                        <button type="button" data-id="${data.id}" id="btnChangePassWord" class="btn btn-outline-primary btnChangePassWord">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
+            let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
+            let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
+            let str = `
+                     <tr id="tr_${item.id}">
+                        <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
+                        <td class="align-middle text-center ">${item.id}</td>
+                        <td class="align-middle text-center ">${item.username}</td>
+                        <td class="align-middle text-center "><b>${item.role.code}</b></td>
+                        <td class="align-middle text-center "><b>${item.status}</b></td>
+                        <td class="align-middle text-center ">
+                            ${item.status === 'Active' ? strBlock : strActive}
+                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
                         </td>
                     </tr>
                     `
@@ -327,24 +359,71 @@
             $("#EmailCre").val("")
             $("#passwordCre").val("")
             $("#passwordConCre").val()
-            handleShowCreateModal();
-            handleShowUpdatePassWord()
-            handleBlock()
-            handleActive()
+            unBindAll()
+            groupHandle()
 
         }).fail((jqXHR) => {
             $('#modalCreateUser .modal-alert-danger ').html('').removeClass('hide').addClass('show');
-            if (jqXHR.responseJSON.message) {
-                let msg = jqXHR.responseJSON.message;
-                let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-                $('#modalCreateUser .modal-alert-danger').append(str)
-            } else if (jqXHR.responseJSON) {
+            if (jqXHR.responseJSON) {
                 let str = '';
                 $.each(jqXHR.responseJSON, (key, item) => {
                     str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
                     $('#modalCreateUser .modal-alert-danger').append(str);
                 })
+            }
+        })
+    }
 
+    function doUpdateRemaining() {
+        role.id = $("#roleUp").val()
+        role.code = $("#roleUp :selected").text()
+
+        user.username = $("#EmailUp").val();
+        user.id = $("#idUserUp").val();
+        user.image = $("#imageUp").val();
+        user.role = role
+        $.ajax({
+            headers: {
+                "accept": "application/json",
+                "content-type": "application/json"
+            },
+            type: "PUT",
+            url: "http://localhost:8080/api/user/update/all",
+            data: JSON.stringify(user)
+        }).done((item) => {
+            $("#modalUpdateFullUser").modal("hide");
+            user = item;
+            let currentRow = $('#tr_' + user.id);
+            let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
+            let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
+            let updateRow = `
+                     <tr id="tr_${item.id}">
+                        <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
+                        <td class="align-middle text-center ">${item.id}</td>
+                        <td class="align-middle text-center ">${item.username}</td>
+                        <td class="align-middle text-center "><b>${item.role.code}</b></td>
+                        <td class="align-middle text-center "><b>${item.status}</b></td>
+                        <td class="align-middle text-center ">
+                            ${item.status === 'Active' ? strBlock : strActive}
+                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
+                        </td>
+                    </tr>
+                    `
+            App.IziToast.showSuccessAlert("Update thành công");
+            currentRow.replaceWith(updateRow);
+            unBindAll()
+            groupHandle()
+        }).fail((jqXHR) => {
+            $('#modalUpdateFullUser .modal-alert-danger').html('').removeClass('hide').addClass('show');
+            if (jqXHR.responseJSON) {
+                let str = '';
+                $.each(jqXHR.responseJSON, (key, item) => {
+                    str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                    $('#modalUpdateFullUser .modal-alert-danger').append(str);
+                })
             }
         })
     }
@@ -366,11 +445,7 @@
             App.SweetAlert.showSuccessAlert("Bạn đã đổi mật khẩu thành công!!")
         }).fail((jqXHR) => {
             $('#modalUpdatePassword .modal-alert-danger').html('').removeClass('hide').addClass('show');
-            if (jqXHR.responseJSON.message) {
-                let msg = jqXHR.responseJSON.message;
-                let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-                $('#modalUpdatePassword .modal-alert-danger').append(str)
-            } else if (jqXHR.responseJSON) {
+            if (jqXHR.responseJSON) {
                 let str = '';
                 $.each(jqXHR.responseJSON, (key, item) => {
                     str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
@@ -381,113 +456,179 @@
     }
 
     $('#frmCreateCustomer').validate({
-        "rules": {
-            "EmailCre": {
-                required: true,
-                email: true,
-                minlength: 3,
-                maxlength: 50,
-            },
-            "passwordCre": {
-                required: true,
-                minlength: 6,
-                maxlength: 30,
-            },
-            "passwordConCre": {
-                required: true,
-                equalTo: "#passwordCre",
-                minlength: 6,
-                maxlength: 30,
-            }
-        },
-        "messages": {
-            "EmailCre": {
-                required: "vui lòng nhập Email!",
-                email: "Vui lòng nhập đúng định dạng Email (VD: phucnguyen@gmail.com)!",
-                minlength: $.validator.format("Email tối thiểu {0} ký tự!"),
-                maxlength: $.validator.format("Email tối đa {0} ký tự"),
-            },
-            "passwordCre": {
-                required: "Vui lòng nhập Password",
-                minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
-                maxlength: $.validator.format("Password tối đa {0} ký tự!"),
-            }
-            ,
-            "passwordConCre": {
-                required: "Vui lòng nhập Password Confirm",
-                equalTo: "Mật khẩu phải giống nhau",
-                minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
-                maxlength: $.validator.format("Password tối đa {0} ký tự!"),
-            }
-        },
-        errorLabelContainer: "#modalCreateUser .modal-alert-danger",
-        errorPlacment: function (error, element) {
-            error.appendTo("#modalCreateUser .modal-alert-danger")
-        },
-        showErrors: function (errorMap, errorList) {
-            if (this.numberOfInvalids() > 0) {
-                $("#modalCreateUser .modal-alert-danger").removeClass("hide").addClass("show");
-            } else {
-                $("#modalCreateUser .modal-alert-danger").removeClass("show").addClass("hide").empty();
-                $("#frmCreateCustomer .input.error").removeClass("error");
-            }
-            this.defaultShowErrors();
-        },
+        // "rules": {
+        //     "EmailCre": {
+        //         required: true,
+        //         email: true,
+        //         minlength: 3,
+        //         maxlength: 50,
+        //     },
+        //     "passwordCre": {
+        //         required: true,
+        //         minlength: 6,
+        //         maxlength: 30,
+        //     },
+        //     "passwordConCre": {
+        //         required: true,
+        //         equalTo: "#passwordCre",
+        //         minlength: 6,
+        //         maxlength: 30,
+        //     }
+        // },
+        // "messages": {
+        //     "EmailCre": {
+        //         required: "vui lòng nhập Email!",
+        //         email: "Vui lòng nhập đúng định dạng Email (VD: phucnguyen@gmail.com)!",
+        //         minlength: $.validator.format("Email tối thiểu {0} ký tự!"),
+        //         maxlength: $.validator.format("Email tối đa {0} ký tự"),
+        //     },
+        //     "passwordCre": {
+        //         required: "Vui lòng nhập Password",
+        //         minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
+        //         maxlength: $.validator.format("Password tối đa {0} ký tự!"),
+        //     }
+        //     ,
+        //     "passwordConCre": {
+        //         required: "Vui lòng nhập Password Confirm",
+        //         equalTo: "Mật khẩu phải giống nhau",
+        //         minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
+        //         maxlength: $.validator.format("Password tối đa {0} ký tự!"),
+        //     }
+        // },
+        // errorLabelContainer: "#modalCreateUser .modal-alert-danger",
+        // errorPlacment: function (error, element) {
+        //     error.appendTo("#modalCreateUser .modal-alert-danger")
+        // },
+        // showErrors: function (errorMap, errorList) {
+        //     if (this.numberOfInvalids() > 0) {
+        //         $("#modalCreateUser .modal-alert-danger").removeClass("hide").addClass("show");
+        //     } else {
+        //         $("#modalCreateUser .modal-alert-danger").removeClass("show").addClass("hide").empty();
+        //         $("#frmCreateCustomer .input.error").removeClass("error");
+        //     }
+        //     this.defaultShowErrors();
+        // },
         submitHandler: function () {
             doCreate();
         }
     })
 
     $('#frmUpdatePassword').validate({
-        "rules": {
-            "passwordUp": {
-                required: true,
-                minlength: 3,
-                maxlength: 50,
-            },
-            "passwordConUp": {
-                required: true,
-                equalTo: "#passwordUp",
-                minlength: 6,
-                maxlength: 30,
-            }
-        },
-        "messages": {
-            "passwordUp": {
-                required: "Vui lòng nhập Password!",
-                minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
-                maxlength: $.validator.format("Password tối đa {0} ký tự"),
-            },
-            "passwordConUp": {
-                required: "Vui lòng nhập Password Confirm",
-                equalTo: "Mật khẩu phải giống nhau",
-                minlength: $.validator.format("Password Confirm tối thiểu {0} ký tự!"),
-                maxlength: $.validator.format("Password Confirm tối đa {0} ký tự!"),
-            }
-        },
-        errorLabelContainer: "#modalUpdatePassword .modal-alert-danger",
-        errorPlacment: function (error, element) {
-            error.appendTo("#modalUpdatePassword .modal-alert-danger")
-        },
-        showErrors: function (errorMap, errorList) {
-            if (this.numberOfInvalids() > 0) {
-                $("#modalUpdatePassword .modal-alert-danger").removeClass("hide").addClass("show");
-            } else {
-                $("#modalUpdatePassword .modal-alert-danger").removeClass("show").addClass("hide").empty();
-                $("#frmUpdatePassword .input.error").removeClass("error");
-            }
-            this.defaultShowErrors();
-        },
+        // "rules": {
+        //     "passwordUp": {
+        //         required: true,
+        //         minlength: 3,
+        //         maxlength: 50,
+        //     },
+        //     "passwordConUp": {
+        //         required: true,
+        //         equalTo: "#passwordUp",
+        //         minlength: 6,
+        //         maxlength: 50,
+        //     }
+        // },
+        // "messages": {
+        //     "passwordUp": {
+        //         required: "Vui lòng nhập Password!",
+        //         minlength: $.validator.format("Password tối thiểu {0} ký tự!"),
+        //         maxlength: $.validator.format("Password tối đa {0} ký tự"),
+        //     },
+        //     "passwordConUp": {
+        //         required: "Vui lòng nhập Password Confirm",
+        //         equalTo: "Mật khẩu phải giống nhau",
+        //         minlength: $.validator.format("Password Confirm tối thiểu {0} ký tự!"),
+        //         maxlength: $.validator.format("Password Confirm tối đa {0} ký tự!"),
+        //     }
+        // },
+        // errorLabelContainer: "#modalUpdatePassword .modal-alert-danger",
+        // errorPlacment: function (error, element) {
+        //     error.appendTo("#modalUpdatePassword .modal-alert-danger")
+        // },
+        // showErrors: function (errorMap, errorList) {
+        //     if (this.numberOfInvalids() > 0) {
+        //         $("#modalUpdatePassword .modal-alert-danger").removeClass("hide").addClass("show");
+        //     } else {
+        //         $("#modalUpdatePassword .modal-alert-danger").removeClass("show").addClass("hide").empty();
+        //         $("#frmUpdatePassword .input.error").removeClass("error");
+        //     }
+        //     this.defaultShowErrors();
+        // },
         submitHandler: function () {
             doUpdatePassword();
         }
     })
 
-    handleShowUpdatePassWord()
-    handleShowCreateModal()
+    $('#frmUpdateFullInformation').validate({
+        // "rules": {
+        //     "imageUp": {
+        //         required: true,
+        //     }
+        // },
+        // "messages": {
+        //     "imageUp": {
+        //         required: "Vui lòng nhập Ảnh!",
+        //
+        //     }
+        // },
+        // errorLabelContainer: "#modalUpdateFullUser .modal-alert-danger",
+        // errorPlacment: function (error, element) {
+        //     error.appendTo("#modalUpdateFullUser .modal-alert-danger")
+        // },
+        // showErrors: function (errorMap, errorList) {
+        //     if (this.numberOfInvalids() > 0) {
+        //         $("#modalUpdateFullUser .modal-alert-danger").removeClass("hide").addClass("show");
+        //     } else {
+        //         $("#modalUpdateFullUser .modal-alert-danger").removeClass("show").addClass("hide").empty();
+        //         $("#frmUpdateFullInformation .input.error").removeClass("error");
+        //     }
+        //     this.defaultShowErrors();
+        // },
+        submitHandler: function () {
+            doUpdateRemaining();
+        }
+    })
+
+
+    function getUserByUserName() {
+        return $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            "type": "GET",
+            url: "http://localhost:8080/api/user/name/" + $("#ursernameLoFirst").text()
+        }).done((data) => {
+            user = data;
+            let str = `
+                <img src="${data.image}" alt="user-image"  class="rounded-circle">
+                <span class="d-none d-sm-inline-block ml-1 font-weight-medium" id="ursernameLoFirst" >${data.username}</span>
+            `
+            $("#setImageUser").append(str);
+        }).fail((jqXHR) => {
+            App.SweetAlert.showErrorAlert("fail user customer");
+            console.log(jqXHR);
+        })
+    }
+
+
+    function groupHandle() {
+        handleShowUpdatePassWord()
+        handleShowCreateModal()
+        handleActive();
+        handleBlock();
+        handleShowUpdateRemaining()
+    }
+
+    function unBindAll() {
+        $(".btn-block").off();
+        $(".btn-active").off();
+        $(".btn-updateRemaining").off();
+        $(".btnChangePassWord").off();
+    }
+
+    groupHandle()
     LoadingAllUser();
-    handleActive();
-    handleBlock();
+    getUserByUserName()
 </script>
 
 </body>

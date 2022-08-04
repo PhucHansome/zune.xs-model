@@ -64,4 +64,9 @@ public class OrderServiceImpl  implements IOrderService{
     public Optional<OrderDTO> findByIdOrderDTO(Long id) {
         return orderRepository.findByIdOrderDTO(id);
     }
+
+    @Override
+    public List<OrderDTO> findOrderByValue(String query) {
+        return orderRepository.findOrderByValue(query);
+    }
 }

@@ -197,15 +197,17 @@
             <li class="dropdown notification-list">
                 <a th:object="${user}" class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown"
                    href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <img src="/assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
-                    <span class="d-none d-sm-inline-block ml-1 font-weight-medium" th:text="${user}"></span>
+                    <div id="setImageUser">
+<!--                    <img src="/assets/images/users/avatar-1.jpg" alt="user-image"  class="rounded-circle">-->
+                    </div>
+                    <span class="d-none d-sm-inline-block ml-1 font-weight-medium" id="ursernameLoFirst" th:text="${user}"></span>
                     <i class="mdi mdi-chevron-down d-none d-sm-inline-block"></i>
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
                     <!-- item-->
                     <div class="dropdown-header noti-title">
-                        <h6 class="text-overflow text-white m-0">Welcome !</h6>
+                        <h6 class="text-overflow text-white m-0">WellCome!</h6>
                     </div>
 
                     <!-- item-->

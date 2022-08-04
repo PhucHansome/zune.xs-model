@@ -67,6 +67,23 @@ public class UserRestController {
         return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
     }
 
+    @PutMapping("/update/all")
+    public ResponseEntity<?>updateAll(@RequestBody UserDTO userDTO,BindingResult bindingResult){
+       Optional<UserDTO> userDTO1 = userService.findUserDTOById(userDTO.getId());
+
+        userDTO.setPassword(userDTO1.get().getPassword());
+        if (bindingResult.hasErrors()) {
+            return appUtils.mapErrorToResponse(bindingResult);
+        }
+
+        boolean existId = userService.existsById(userDTO.getId());
+        if (!existId) {
+            throw new ResourceNotFoundException("Customer ID invalid");
+        }
+        User user = userService.saveNoPassword(userDTO.toUser());
+        return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
+    }
+
     @PutMapping("/active")
     public ResponseEntity<?>updateActive(@RequestBody UserDTO userDTO,BindingResult bindingResult){
 

@@ -102,4 +102,9 @@ public class UserServiceImpl implements IUserService {
     public User saveNoPassword(User user) {
         return userRepository.save(user);
     }
+
+    @Override
+    public Optional<UserDTO> findUserDTOById(Long id) {
+        return userRepository.findUserDTOById(id);
+    }
 }

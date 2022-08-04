@@ -136,7 +136,7 @@
             <tr id="tr_${product.id}">
                 <td class="align-middle text-center"></td>
                 <td class="align-middle text-center">${product.productCode}</td>
-                <td class="align-middle text-center"><img width="150px" style="border-radius: 10px;" src="${product.image}"></td>
+                <td class="align-middle text-center"><img width="80px" style="border-radius: 10px;" src="${product.image}"></td>
                 <td class="align-middle text-center " >${product.productName}</td>
                 <td class="align-middle text-center" >${product.category.name}</td>
                 <td class="align-middle text-center">${product.quantityProduct}</td>
@@ -204,12 +204,12 @@
         $(".btn-delete").on("click", function () {
             let customerId = $(this).data("id");
             Swal.fire({
-                title: 'Are you sure to deactive the selected customer ?',
+                title: 'Bạn có muốn xóa sản phẩm này không?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, deactive it!'
+                confirmButtonText: 'Đúng, Xóa nó!'
             }).then((resuilt) => {
                     if (resuilt.isConfirmed) {
                         doDelete(customerId);
@@ -233,13 +233,8 @@
             url: "http://localhost:8080/api/product/" + customerId,
         })
             .done(() => {
-                // getAllCustomer();
-
                 $("#tr_" + customerId).remove();
-
-                App.SweetAlert.showSuccessAlert("Customer has been deleted. ")
-
-
+                App.SweetAlert.showSuccessAlert("Bạn đã xóa sản phẩm thành công")
             }).fail(() => {
             App.SweetAlert.showErrorAlert("Customer information invailid");
         })
@@ -272,7 +267,7 @@
             <tr id="tr_${product.id}">
                 <td class="align-middle text-center"></td>
                 <td class="align-middle text-center">${product.productCode}</td>
-                <td class="align-middle text-center"><img width="150px" style="border-radius: 10px;" src="${product.image}"></td>
+                <td class="align-middle text-center"><img width="80px" style="border-radius: 10px;" src="${product.image}"></td>
                 <td class="align-middle text-center " >${product.productName}</td>
                 <td class="align-middle text-center" >${product.category.name}</td>
                 <td class="align-middle text-center">${product.quantityProduct}</td>
@@ -300,14 +295,10 @@
             $("#urlCre").val("")
         }).fail((jqXHR) => {
             $('#modal-create-product .modal-alert-danger ').html('').removeClass('hide').addClass('show');
-            if (jqXHR.responseJSON.message) {
-                let msg = jqXHR.responseJSON.message;
-                let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-                $('#modal-create-product .modal-alert-danger').append(str)
-            } else if (jqXHR.responseJSON) {
+             if (jqXHR.responseJSON) {
                 let str = '';
                 $.each(jqXHR.responseJSON, (key, item) => {
-                    str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                    str = `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
                     $('#modal-create-product .modal-alert-danger').append(str);
                 })
             }
@@ -344,7 +335,7 @@
                      <tr id="tr_${product.id}">
                         <td class="align-middle text-center"></td>
                         <td class="align-middle text-center">${product.productCode}</td>
-                        <td class="align-middle text-center"><img width="150px" style="border-radius: 10px;" src="${product.image}"></td>
+                        <td class="align-middle text-center"><img width="80px" style="border-radius: 10px;" src="${product.image}"></td>
                         <td class="align-middle text-center " >${product.productName}</td>
                         <td class="align-middle text-center" >${product.category.name}</td>
                         <td class="align-middle text-center">${product.quantityProduct}</td>
@@ -374,11 +365,6 @@
         }).fail((jqXHR) => {
             console.log(jqXHR);
             $('#modal-update-product .modal-alert-danger ').html('').removeClass('hide').addClass('show');
-            // if (jqXHR.responseJSON.message) {
-            //     let msg = jqXHR.responseJSON.message;
-            //     let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-            //     $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
-            // } else
                 if (jqXHR.responseJSON) {
                 let str = '';
                 $.each(jqXHR.responseJSON, (key, item) => {
@@ -577,6 +563,28 @@
         }
     })
 
+    function getUserByUserName() {
+        return $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            "type": "GET",
+            url: "http://localhost:8080/api/user/name/" + $("#ursernameLoFirst").text()
+        }).done((data) => {
+            user = data;
+            let str = `
+                <img src="${data.image}" alt="user-image"  class="rounded-circle">
+                <span class="d-none d-sm-inline-block ml-1 font-weight-medium" id="ursernameLoFirst" >${data.username}</span>
+            `
+            $("#setImageUser").append(str);
+        }).fail((jqXHR) => {
+            App.SweetAlert.showErrorAlert("fail user customer");
+            console.log(jqXHR);
+        })
+    }
+
+    getUserByUserName()
     handlerShowConfirmDelete()
     handleShowUpdateProduct();
     handleShowCreateProduct()

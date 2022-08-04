@@ -1,5 +1,6 @@
 package com.cg.controller.rest;
 
+import com.cg.exception.DataInputException;
 import com.cg.exception.ResourceNotFoundException;
 import com.cg.model.Order;
 import com.cg.model.OrderItem;
@@ -42,30 +43,37 @@ public class OrderRestController {
     private IProductService productService;
 
     @GetMapping("/allorder")
-    public ResponseEntity<?>showListOrder(){
+    public ResponseEntity<?> showListOrder() {
         List<OrderDTO> orderList = orderService.findAllOrderDTO();
 
-        return new ResponseEntity<>(orderList,HttpStatus.OK);
+        return new ResponseEntity<>(orderList, HttpStatus.OK);
     }
 
     @GetMapping("/orders/{id}")
-    public ResponseEntity<?> getOrderById(@PathVariable Long id){
+    public ResponseEntity<?> getOrderById(@PathVariable Long id) {
         Optional<OrderDTO> orderDTO = orderService.findByIdOrderDTO(id);
 
-        if(!orderDTO.isPresent()){
+        if (!orderDTO.isPresent()) {
             throw new ResourceNotFoundException("Invalid User Id");
         }
         return new ResponseEntity<>(orderDTO.get().toOrder(), HttpStatus.OK);
     }
 
+    @GetMapping("/orders/search/{query}")
+    public ResponseEntity<?> seachListOrder(@PathVariable String query) {
+        List<OrderDTO> orderListSearch = orderService.findOrderByValue(query);
+        return new ResponseEntity<>(orderListSearch, HttpStatus.OK);
+    }
+
+
     @PostMapping("/create")
-    public ResponseEntity<?> doCreate(@Validated @RequestBody OrderDTO orderDTO, BindingResult bindingResult){
+    public ResponseEntity<?> doCreate(@Validated @RequestBody OrderDTO orderDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }
         Optional<Product> optionalProduct = productService.findById(orderDTO.getOrderItem().getProduct().getId());
 
-        if(!optionalProduct.isPresent()){
+        if (!optionalProduct.isPresent()) {
             return new ResponseEntity<>("Error Product request", HttpStatus.BAD_REQUEST);
         }
 
@@ -74,8 +82,8 @@ public class OrderRestController {
             orderItemsService.softDelete(optionalOrder.get());
             orderDTO.setStatus("Waiting");
             optionalProduct.get().setQuantityProduct(new BigDecimal(String.valueOf(orderDTO.getOrderItem().getProduct().getQuantityProduct().subtract(orderDTO.getOrderItem().getQuantityOrdered()))));
-            if (Integer.parseInt(String.valueOf(optionalProduct.get().getQuantityProduct())) < 0){
-                return new ResponseEntity<>("Số lượng không đủ",HttpStatus.BAD_REQUEST);
+            if (Integer.parseInt(String.valueOf(optionalProduct.get().getQuantityProduct())) < 0) {
+                throw new DataInputException("Số lượng không đủ");
             }
             Order order = orderService.save(orderDTO.toOrder());
             productService.save(optionalProduct.get());
@@ -85,8 +93,9 @@ public class OrderRestController {
 
         }
     }
+
     @PutMapping("/update")
-    public  ResponseEntity<?> doUpdate(@RequestBody OrderDTO orderDTO, BindingResult bindingResult){
+    public ResponseEntity<?> doUpdate(@RequestBody OrderDTO orderDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }
@@ -97,7 +106,7 @@ public class OrderRestController {
     }
 
     @PutMapping("/cancelorder")
-    public  ResponseEntity<?> doCancel(@RequestBody OrderDTO orderDTO, BindingResult bindingResult){
+    public ResponseEntity<?> doCancel(@RequestBody OrderDTO orderDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }

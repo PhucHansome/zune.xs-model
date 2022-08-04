@@ -46,19 +46,30 @@ public class UserDTO   {
     @NotNull
     private String status;
 
+    private String image;
+
     public UserDTO(Long id, String username, String status) {
         this.id = id;
         this.username = username;
         this.status = status;
     }
 
-
-
-    public UserDTO(Long id, String username, Role role, String status) {
+    public UserDTO(Long id, String username, Role role, String status, String image) {
         this.id = id;
         this.username = username;
+//        this.password = password;
         this.role = role.toRoleDTO();
         this.status = status;
+        this.image = image;
+    }
+
+    public UserDTO(Long id, String username,String password, Role role, String status, String image) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role.toRoleDTO();
+        this.status = status;
+        this.image = image;
     }
 
 
@@ -69,6 +80,7 @@ public class UserDTO   {
                 .setPassword(password)
                 .setRole(role.toRole())
                 .setStatus(status)
+                .setImage(image)
                 ;
 
     }

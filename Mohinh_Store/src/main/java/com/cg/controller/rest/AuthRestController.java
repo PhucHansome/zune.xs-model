@@ -87,41 +87,45 @@ public class AuthRestController {
            throw new EmailExistsException("Tài khoản này đã bị block!");
         }
 
-        Authentication authentication  =  authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        if(userDTO.get().getStatus().equals("Active")){
+            Authentication authentication  =  authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtService.generateTokenLogin(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User currentUser = userService.getByUsername(user.getUsername());
+            String jwt = jwtService.generateTokenLogin(authentication);
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User currentUser = userService.getByUsername(user.getUsername());
 
-        JwtResponse jwtResponse = new JwtResponse(
-                jwt,
-                currentUser.getId(),
-                userDetails.getUsername(),
-                currentUser.getUsername(),
-                userDetails.getAuthorities()
-        );
+            JwtResponse jwtResponse = new JwtResponse(
+                    jwt,
+                    currentUser.getId(),
+                    userDetails.getUsername(),
+                    currentUser.getUsername(),
+                    userDetails.getAuthorities()
+            );
 
 
 
-        ResponseCookie springCookie = ResponseCookie.from("JWT", jwt)
-                .httpOnly(false)
-                .secure(false)
-                .path("/")
-                .maxAge(60 * 1000)
-                .domain("localhost")
+            ResponseCookie springCookie = ResponseCookie.from("JWT", jwt)
+                    .httpOnly(false)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(60 * 1000)
+                    .domain("localhost")
 //                .domain("ajax-bank-location-jwt.herokuapp.com")
 //                .domain("bank-transaction.azurewebsites.net")
-                .build();
+                    .build();
 
-        System.out.println(jwtResponse);
+            System.out.println(jwtResponse);
 
-        return ResponseEntity
-                .ok()
-                .header(HttpHeaders.SET_COOKIE, springCookie.toString())
-                .body(jwtResponse);
+            return ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.SET_COOKIE, springCookie.toString())
+                    .body(jwtResponse);
+        }
+
+        throw new EmailExistsException("Tài khoản này không tồn tại");
 
     }
 }

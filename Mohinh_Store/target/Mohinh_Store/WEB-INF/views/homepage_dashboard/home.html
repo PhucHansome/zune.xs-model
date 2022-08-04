@@ -345,10 +345,30 @@
 <th:block th:replace="/layout/script/script :: script"/>
 
 <script>
-    $(".edit").on("click", function (){
-        let a = App.catchIdLogin();
-        console.log(a);
-    })
+
+
+    function getUserByUserName() {
+        return $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            "type": "GET",
+            url: "http://localhost:8080/api/user/name/" + $("#ursernameLoFirst").text()
+        }).done((data) => {
+            user = data;
+            let str = `
+                <img src="${data.image}" alt="user-image"  class="rounded-circle">
+                <span class="d-none d-sm-inline-block ml-1 font-weight-medium" id="ursernameLoFirst" >${data.username}</span>
+            `
+            $("#setImageUser").append(str);
+        }).fail((jqXHR) => {
+            App.SweetAlert.showErrorAlert("fail user customer");
+            console.log(jqXHR);
+        })
+    }
+
+    getUserByUserName()
 </script>
 
 </body>

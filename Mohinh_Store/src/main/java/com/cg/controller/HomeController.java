@@ -28,6 +28,9 @@ public class HomeController {
         return username;
     }
 
+
+
+
     @GetMapping("/homecustomer")
     public ModelAndView showCustomerHomePage(){
         ModelAndView modelAndView = new ModelAndView();
@@ -41,7 +44,6 @@ public class HomeController {
         modelAndView.setViewName("/customer/index");
         String username = getPrincipal();
         modelAndView.addObject("user",username);
-
         return modelAndView;
     }
 
@@ -66,7 +68,6 @@ public class HomeController {
         modelAndView.setViewName("/homepage_dashboard/home");
         String username = getPrincipal();
         modelAndView.addObject("user",username);
-
         return modelAndView;
     }
 

@@ -58,11 +58,12 @@ class Role{
 }
 
 class User {
-    constructor(id ,username,password,role) {
+    constructor(id ,username,password,role,image) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
+        this.image = image;
     }
 }
 

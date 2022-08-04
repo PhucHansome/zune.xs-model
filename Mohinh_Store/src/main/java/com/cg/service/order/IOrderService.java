@@ -11,4 +11,6 @@ public interface IOrderService extends IGeneralService<Order> {
     List<OrderDTO> findAllOrderDTO();
 
     Optional<OrderDTO> findByIdOrderDTO(Long id);
+
+    List<OrderDTO> findOrderByValue(String query);
 }

@@ -38,6 +38,9 @@ public class User extends BaseEntity {
     @Column(name = "status")
     private String status;
 
+    @Column
+    private String image;
+
     @Override
     public String toString() {
         return "User{" +
@@ -46,6 +49,7 @@ public class User extends BaseEntity {
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
                 ", status='" + status + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
     public UserDTO toUserDTO() {
@@ -54,7 +58,8 @@ public class User extends BaseEntity {
                 .setUsername(username)
                 .setPassword(password)
                 .setRole(role.toRoleDTO())
-                .setStatus(status);
+                .setStatus(status)
+                .setImage(image);
 
     }
 

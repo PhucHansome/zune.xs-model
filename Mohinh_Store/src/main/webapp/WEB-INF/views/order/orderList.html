@@ -48,8 +48,25 @@
                 </div>
                 <!-- end page title -->
                 <div class="row">
-                    <div class="col-8 float-lg-left">
+                    <div class="col-3 float-lg-left">
                         <h2>Danh sách Order</h2>
+                    </div>
+                    <div class="col-4">
+                        <p class="align-middle text-center">
+                           <span><b> Tổng tiền Toàn bộ đơn hàng: </b></span><br>
+
+                            <b> <i><u><span style="color: red" id="grandTotalAll" class="align-middle text-center"></span></u></i></b>
+                        </p>
+                    </div>
+                    <div class="col-5 float-lg-right">
+                        <div class="row">
+                            <div class="col-8">
+                                <input type="search" name="searchOrder" class="form-control" id="searchOrder">
+                            </div>
+                            <div class="col-4">
+                                <button id="btn-searchOrder" class="btn btn-youtube btn-searchOrder">Search</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -73,6 +90,7 @@
                             </thead>
                             <tbody>
                             </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -125,7 +143,9 @@
             "type": "GET",
             "url": "http://localhost:8080/api/order/allorder"
         }).done((data) => {
+            $('#tableListOrder tbody').html("");
             console.log(data)
+            let sum = 0
             $.each(data, (i, item) => {
                 order = item;
                 let str = `
@@ -156,7 +176,13 @@
                 handleShowView();
                 doComplete()
                 doCancel()
+                sum +=(order.orderItem.grandTotal)
             })
+            $("#grandTotalAll").text(new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(sum));
+
         }).fail(() => {
             App.IziToast.showErrorAlert("List Order Trống")
         })
@@ -243,13 +269,13 @@
                                     <td class="align-middle text-center">${order.orderItem.quantityOrdered}</td>
                                     <td class="align-middle text-center">${order.user.username}</td>
                                     <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
-                                        style: 'currency',
-                                        currency: 'VND'
-                                    }).format(order.orderItem.product.priceProduct)}</td>
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(order.orderItem.product.priceProduct)}</td>
                                     <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
-                                        style: 'currency',
-                                        currency: 'VND'
-                                    }).format(order.orderItem.grandTotal)}</td>
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(order.orderItem.grandTotal)}</td>
                                     </tbody>
                                 </table>
                             </div>
@@ -276,6 +302,68 @@
 
         return [day, month, year].join('-');
     }
+
+    function doUserBySearchQueryStatus() {
+        $(".btn-searchOrder").on("click", function () {
+
+            let query = $("#searchOrder").val();
+            $('#tableListOrder tbody').html("");
+            if (query === "") {
+
+                LoadingAllOrder()
+                return
+            }
+
+            $.ajax({
+                Type: "GET",
+                url: "http://localhost:8080/api/order/orders/search/" + query
+            }).done((data) => {
+                $('#tableListOrder tbody').html("");
+                let sum = 0
+                $.each(data, (i, item) => {
+                    order = item;
+                    let str = `
+            <tr id="tr_${order.id}">
+                <td class="align-middle text-center"></td>
+                <td class="align-middle text-center">${order.id}</td>
+                <td class="align-middle text-center " >${order.orderItem.product.productName}</td>
+                <td class="align-middle text-center" >${order.orderItem.product.category.name}</td>
+                <td class="align-middle text-center" >${order.customerInfo.fullName}</td>
+                <td class="align-middle text-center">${order.orderItem.quantityOrdered}</td>
+                <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(order.orderItem.product.priceProduct)}</td>
+                <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(order.orderItem.grandTotal)}</td>
+                <td class="align-middle text-center">${order.customerInfo.address}</td>
+                <td class="align-middle text-center">${order.user.username}</td>
+                <td class="align-middle text-center"><b> ${order.status}</b></td>
+                <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
+                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
+                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  id="btn-CheckCancel"><i class="fa-solid fa-ban"></i></button></td>
+            </tr>
+
+`
+                    sum +=(order.orderItem.grandTotal)
+                    $('#tableListOrder tbody').prepend(str);
+                    handleShowView();
+                    doComplete()
+                    doCancel()
+                })
+                $("#grandTotalAll").text(new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(sum));
+                doUserBySearchQueryStatus()
+            }).fail(() => {
+                App.IziToast.showErrorAlert("List Order Trống")
+            })
+        })
+    }
+
 
     function doComplete() {
         $("#btn-CheckOut").on("click", function () {
@@ -353,13 +441,13 @@
                                     <td class="align-middle text-center" >${order.customerInfo.fullName}</td>
                                     <td class="align-middle text-center">${order.orderItem.quantityOrdered}</td>
                                     <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
-                                        style: 'currency',
-                                        currency: 'VND'
-                                    }).format(order.orderItem.product.priceProduct)}</td>
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(order.orderItem.product.priceProduct)}</td>
                                     <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
-                                        style: 'currency',
-                                        currency: 'VND'
-                                    }).format(order.orderItem.grandTotal)}</td>
+                        style: 'currency',
+                        currency: 'VND'
+                    }).format(order.orderItem.grandTotal)}</td>
                                     <td class="align-middle text-center">${order.customerInfo.address}</td>
                                     <td class="align-middle text-center">${order.user.username}</td>
                                     <td class="align-middle text-center"><b> ${order.status}</b></td>
@@ -381,10 +469,33 @@
         })
     }
 
+    function getUserByUserName() {
+        return $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            "type": "GET",
+            url: "http://localhost:8080/api/user/name/" + $("#ursernameLoFirst").text()
+        }).done((data) => {
+            user = data;
+            let str = `
+                <img src="${data.image}" alt="user-image"  class="rounded-circle">
+                <span class="d-none d-sm-inline-block ml-1 font-weight-medium" id="ursernameLoFirst" >${data.username}</span>
+            `
+            $("#setImageUser").append(str);
+        }).fail((jqXHR) => {
+            App.SweetAlert.showErrorAlert("fail user customer");
+            console.log(jqXHR);
+        })
+    }
+
+    getUserByUserName()
     doCancel()
     doComplete()
     handleShowView()
     LoadingAllOrder()
+    doUserBySearchQueryStatus()
 </script>
 
 </body>

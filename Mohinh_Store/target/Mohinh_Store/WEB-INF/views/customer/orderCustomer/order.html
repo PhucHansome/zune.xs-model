@@ -127,7 +127,7 @@
 </div>
 
 
-<th:block th:replace="/customer/layout_customer/footer-customer :: footer"/>
+<th:block th:replace="/customer/layout_customer/footer-script-customer :: footer"/>
 
 <script src="/assets/js/jquery-3.6.0.min.js"></script>
 <script src="/assets/js/jquery.validate-1.19.3.min.js"></script>
@@ -394,7 +394,7 @@
     }
 
     function doBuyItem() {
-        $("#btn-buy").on("click", () => {
+        $(".btn-buy").on("click", () => {
             delete customerInfo.id;
             customerInfo.fullName = $("#fullNameCustomer").val();
             customerInfo.phone = $("#phoneCustomer").val();
@@ -438,8 +438,13 @@
                                 // drawAllItemsCustomerOrder();
                                 window.location.href= "/homecustomer/product";
                             }, 1000);
-                        }).fail(() => {
-                            App.IziToast.showErrorAlert("Order Thất bại");
+                        }).fail((jqXHR) => {
+                            console.log(jqXHR);
+                            if (jqXHR.responseJSON) {
+                                $.each(jqXHR.responseJSON, (key, item) => {
+                                    App.IziToast.showErrorAlert(item);
+                                })
+                            }
                         })
                     })
                 })
