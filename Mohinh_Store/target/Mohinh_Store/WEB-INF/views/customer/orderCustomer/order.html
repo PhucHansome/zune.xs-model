@@ -138,6 +138,10 @@
 <script src="/assets/font-awesome/v4.7.0/js/all.min.js"></script>
 
 <script>
+
+    function tai_lai_trang(){
+
+    }
     let orderItem = new OrderItem();
 
     let customerInfo = new CustomerInfo();
@@ -211,6 +215,21 @@
             });
         }).fail(() => {
             App.IziToast.showErrorAlert("giỏ hàng trống")
+            setTimeout(function () {
+                App.IziToast.showErrorAlert("Trở lại trang chủ sau 3s")
+                setTimeout(function () {
+                    App.IziToast.showErrorAlert("3")
+                    setTimeout(function () {
+                        App.IziToast.showErrorAlert("2")
+                        setTimeout(function () {
+                            App.IziToast.showErrorAlert("1")
+                            setTimeout(function () {
+                                window.location.href = "/homecustomer/product";
+                            }, 1000);
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
         })
     }
 
@@ -305,6 +324,7 @@
             .done(() => {
                 $("#tr_" + orderItemsId).remove();
                 App.IziToast.showSuccessAlert("Xóa Sản Phẩm Khỏi giỏ hàng thành công");
+                drawAllItemsCustomerOrder()
                 doUpdateTotalByButton();
             }).fail(() => {
             App.SweetAlert.showErrorAlert("Xóa Sản Phẩm thất bại ");
@@ -382,10 +402,11 @@
             `
                     App.IziToast.showSuccessAlert("Cập nhật giá sản phẩm thành công");
                     currentRow.replaceWith(updateRow);
-                    $('body,html').animate({scrollTop: 0}, 750);
-                    setTimeout(function () {
-                        window.location.href= "/homecustomer/order";
-                    }, 1000);
+                    location.reload();
+                    // setTimeout(function () {
+                    //     App.IziToast.showSuccessAlert("Cập nhật giá sản phẩm thành công");
+                    // }, 1000);
+                //
                 }).fail(() => {
                     App.SweetAlert.showErrorAlert("update Giá sản phẩm thất bại!");
                 })
@@ -436,7 +457,7 @@
                             setTimeout(function () {
                                 $(".OrderItem tbody").html("")
                                 // drawAllItemsCustomerOrder();
-                                window.location.href= "/homecustomer/product";
+                                window.location.href = "/homecustomer/product";
                             }, 1000);
                         }).fail((jqXHR) => {
                             console.log(jqXHR);

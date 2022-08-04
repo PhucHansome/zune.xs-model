@@ -298,7 +298,7 @@
              if (jqXHR.responseJSON) {
                 let str = '';
                 $.each(jqXHR.responseJSON, (key, item) => {
-                    str = `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                    str = `<p><label for="${key}" id="${key}-error" class="error">${item}</label></p>`;
                     $('#modal-create-product .modal-alert-danger').append(str);
                 })
             }
@@ -368,7 +368,7 @@
                 if (jqXHR.responseJSON) {
                 let str = '';
                 $.each(jqXHR.responseJSON, (key, item) => {
-                    str = `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                    str = `<p><label for="${key}" id="${key}-error" class="error">${item}</label></p>`;
                     $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
                 })
             }

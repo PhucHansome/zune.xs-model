@@ -61,7 +61,7 @@ public class UserRestController {
 
         boolean existId = userService.existsById(userDTO.getId());
         if (!existId) {
-            throw new ResourceNotFoundException("Customer ID invalid");
+            throw new ResourceNotFoundException("User ID invalid");
         }
         User user = userService.save(userDTO.toUser());
         return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
@@ -71,7 +71,6 @@ public class UserRestController {
     public ResponseEntity<?>updateAll(@RequestBody UserDTO userDTO,BindingResult bindingResult){
        Optional<UserDTO> userDTO1 = userService.findUserDTOById(userDTO.getId());
 
-        userDTO.setPassword(userDTO1.get().getPassword());
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }
@@ -80,6 +79,11 @@ public class UserRestController {
         if (!existId) {
             throw new ResourceNotFoundException("Customer ID invalid");
         }
+
+        if(userDTO.getRole().getId() < 1 || userDTO.getRole().getId() >2){
+            throw new ResourceNotFoundException("Role không tồn tại");
+        }
+        userDTO.setPassword(userDTO1.get().getPassword());
         User user = userService.saveNoPassword(userDTO.toUser());
         return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
     }

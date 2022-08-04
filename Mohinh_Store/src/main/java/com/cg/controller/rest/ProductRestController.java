@@ -1,6 +1,7 @@
 package com.cg.controller.rest;
 
 import com.cg.exception.DataInputException;
+import com.cg.exception.EmailExistsException;
 import com.cg.exception.ResourceNotFoundException;
 import com.cg.model.Category;
 import com.cg.model.Product;
@@ -17,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -60,34 +62,30 @@ public class ProductRestController {
 
     @PostMapping("/create")
     public ResponseEntity<?> doCreate(@Validated @RequestBody ProductDTO productDTO, BindingResult bindingResult) {
-        try {
 
-            if (bindingResult.hasErrors()) {
-                return appUtils.mapErrorToResponse(bindingResult);
-            }
-            productDTO.setId(0L);
-            Product newProduct = productService.save(productDTO.toProduct());
-
-            return new ResponseEntity<>(newProduct.toProductDTO(), HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Thêm sản phẩm thất bại", HttpStatus.BAD_REQUEST);
+        if (bindingResult.hasErrors()) {
+            return appUtils.mapErrorToResponse(bindingResult);
         }
-
+            String checkPrice = String.valueOf(new BigDecimal(String.valueOf(productDTO.getPriceProduct())));
+            if (!checkPrice.toString().matches("\"(^$|[0-9]*$)\"")) {
+                productDTO.setId(0L);
+                Product newProduct = productService.save(productDTO.toProduct());
+                return new ResponseEntity<>(newProduct.toProductDTO(), HttpStatus.CREATED);
+            }
+        throw new EmailExistsException("Tạo mới thất bại");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> doUpdate(@Validated @RequestBody ProductDTO productDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> doUpdate(@Valid @RequestBody ProductDTO productDTO, BindingResult bindingResult) {
 
-            new ProductDTO().validate(productDTO, bindingResult);
 
-            if (bindingResult.hasErrors()) {
-                return appUtils.mapErrorToResponse(bindingResult);
-            }
+        if (bindingResult.hasErrors()) {
+            return appUtils.mapErrorToResponse(bindingResult);
+        }
 
-            Product updateProduct = productService.save(productDTO.toProduct());
+        Product updateProduct = productService.save(productDTO.toProduct());
 
-            return new ResponseEntity<>(updateProduct.toProductDTO(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(updateProduct.toProductDTO(), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{customerId}")

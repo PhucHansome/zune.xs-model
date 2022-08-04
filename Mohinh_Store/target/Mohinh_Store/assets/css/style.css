@@ -1,6 +1,6 @@
 label.error {
     display: list-item;
-    margin-top: 5px;
+    margin-top: -22px;
     color: #842029;
     margin-left: 20px;
     background: #e7a9a9;
@@ -11,4 +11,7 @@ label.error {
 .show{
 display: block !important;
 
+}
+.modal-alert-danger{
+    margin-top: 11px
 }

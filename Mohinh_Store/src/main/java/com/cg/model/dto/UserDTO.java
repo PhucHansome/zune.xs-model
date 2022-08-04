@@ -23,7 +23,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class UserDTO   {
+public class UserDTO  {
 
     private Long id;
 
@@ -43,9 +43,11 @@ public class UserDTO   {
 
     private Date updatedAt;
 
-    @NotNull
+
+    @NotBlank(message = "Trạng thái không được để trống")
     private String status;
 
+    @NotBlank(message = "Url Ảnh không được để trống")
     private String image;
 
     public UserDTO(Long id, String username, String status) {
@@ -84,4 +86,5 @@ public class UserDTO   {
                 ;
 
     }
+
 }

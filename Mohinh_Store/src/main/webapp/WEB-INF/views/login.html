@@ -118,7 +118,8 @@
             role: {
                 id: 2
             },
-            status : "Active"
+            status : "Active",
+            image: "abc"
         }
 
         $.ajax({
@@ -127,7 +128,7 @@
                 "content-type": "application/json"
             },
             type: "POST",
-            url: "http://localhost:8080/api/auth/register",
+            url: "http://localhost:8080/api/auth/registerdefaulimage",
             data: JSON.stringify(user)
         }).done((data) => {
 

@@ -33,6 +33,7 @@ public class ProductDTO implements Validator {
     private CategoryDTO category;
 
 
+    @NotNull(message = "số lượng không được để trống")
     @Min(value = 1, message = "số lượng tối thiểu 1 sản phẩm")
     @Max(value = 999, message = "số lượng không vượt quá 999 sản phẩm")
     private BigDecimal quantityProduct;
@@ -40,7 +41,7 @@ public class ProductDTO implements Validator {
     @NotEmpty(message = "Chi tiết sản phẩm không được để trống")
     private String productDescription;
 
-    //    @Pattern(regexp = "(^$|[0-9]*$)", message = "Chỉ được nhập số"))
+    @NotNull(message = "số tiền không được để trống")
     @Min(value = 10000, message = "số tiền tối thiểu 10,000VNĐ")
     @Max(value = 999999999, message = "Số tiền không vượt quá 999,999,999VND")
     private BigDecimal priceProduct;

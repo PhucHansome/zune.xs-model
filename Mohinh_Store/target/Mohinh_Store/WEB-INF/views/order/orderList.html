@@ -167,9 +167,9 @@
                 <td class="align-middle text-center">${order.customerInfo.address}</td>
                 <td class="align-middle text-center">${order.user.username}</td>
                 <td class="align-middle text-center"><b> ${order.status}</b></td>
-                <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
-                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
-                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  id="btn-CheckCancel"><i class="fa-solid fa-ban"></i></button></td>
+                <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  ><i class="fa-solid fa-eye"></i></button></td>
+                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  ><i class="fas fa-shopping-cart"></i></button></td>
+                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  ><i class="fa-solid fa-ban"></i></button></td>
             </tr>
             `
                 $('#tableListOrder tbody').prepend(str);
@@ -205,7 +205,7 @@
     }
 
     function handleShowView() {
-        $("#btn_View").on("click", function () {
+        $(".btn_View").on("click", function () {
             let id = $(this).data("id")
             getOrderById(id).then(() => {
                 $("#OrderBill").html("")
@@ -213,7 +213,7 @@
                         <div class="row ">
                         <div class="col-1"></div>
                         <div class="col-10 text-center">
-                            <h2 style="color: Red">Order #${order.id}</h2>
+                            <h2 style="color: Red">Hóa đơn #${order.id}</h2>
 
                             </div>
                              <hr>
@@ -222,7 +222,7 @@
                         <div class="row">
                             <div class="col-1"></div>
                             <div class="col-5">
-                                <div class="row"><label style="font-size: 25px" ><b>OrderInformation</b></label>
+                                <div class="row"><label  ><b>Tên sản phẩm:  ${order.orderItem.product.productName}</b></label>
                                 </div>
                                 <div class="row"><label >Ngày hoàn thành đơn : ${formatDate(order.shippedDate)}</label></div>
 
@@ -232,9 +232,9 @@
                                 </div>
                             </div>
                             <div class="col-5">
-                                <div class="row"><label style="font-size: 25px" ><b>Account information</b></label>
+                                <div class="row"><label  ><b>Người tạo đơn: ${order.user.username}</b></label>
                                 </div>
-                                <div class="row"><label >Họ và tên: ${order.customerInfo.fullName}</label>
+                                <div class="row"><label >Họ và tên khách hàng: ${order.customerInfo.fullName}</label>
                                 </div>
                                 <div class="row"><label >số điện thoại: ${order.customerInfo.phone}</label>
                                 </div>
@@ -341,9 +341,9 @@
                 <td class="align-middle text-center">${order.customerInfo.address}</td>
                 <td class="align-middle text-center">${order.user.username}</td>
                 <td class="align-middle text-center"><b> ${order.status}</b></td>
-                <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
-                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
-                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  id="btn-CheckCancel"><i class="fa-solid fa-ban"></i></button></td>
+                <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  ><i class="fa-solid fa-eye"></i></button></td>
+                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  ><i class="fas fa-shopping-cart"></i></button></td>
+                 <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  ><i class="fa-solid fa-ban"></i></button></td>
             </tr>
 
 `
@@ -366,7 +366,7 @@
 
 
     function doComplete() {
-        $("#btn-CheckOut").on("click", function () {
+        $(".btn-CheckOut").on("click", function () {
             let id = $(this).data("id")
             getOrderById(id).then(() => {
                 $.ajax({
@@ -399,9 +399,9 @@
                                     <td class="align-middle text-center">${order.customerInfo.address}</td>
                                     <td class="align-middle text-center">${order.user.username}</td>
                                     <td class="align-middle text-center"><b> ${order.status}</b></td>
-                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
-                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
-                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  id="btn-CheckCancel"><i class="fa-solid fa-ban"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  ><i class="fa-solid fa-eye"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  ><i class="fas fa-shopping-cart"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  ><i class="fa-solid fa-ban"></i></button></td>
                                 </tr>
                                `
                     currentRow.replaceWith(str);
@@ -418,7 +418,7 @@
     }
 
     function doCancel() {
-        $("#btn-CheckCancel").on("click", function () {
+        $(".btn-CheckCancel").on("click", function () {
             let id = $(this).data("id")
             getOrderById(id).then(() => {
                 $.ajax({
@@ -451,9 +451,9 @@
                                     <td class="align-middle text-center">${order.customerInfo.address}</td>
                                     <td class="align-middle text-center">${order.user.username}</td>
                                     <td class="align-middle text-center"><b> ${order.status}</b></td>
-                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  id="btn_View"><i class="fa-solid fa-eye"></i></button></td>
-                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut"  id="btn-CheckOut"><i class="fas fa-shopping-cart"></i></button></td>
-                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel"  id="btn-CheckCancel"><i class="fa-solid fa-ban"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-warning btn_View"  ><i class="fa-solid fa-eye"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-success btn-CheckOut" ><i class="fas fa-shopping-cart"></i></button></td>
+                                    <td class="align-middle text-center "><button data-id="${order.id}" class="btn btn-danger btn-CheckCancel" ><i class="fa-solid fa-ban"></i></button></td>
                                 </tr>
                                `
                     currentRow.replaceWith(str);
