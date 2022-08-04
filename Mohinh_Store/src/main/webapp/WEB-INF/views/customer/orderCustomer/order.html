@@ -139,9 +139,10 @@
 
 <script>
 
-    function tai_lai_trang(){
+    function tai_lai_trang() {
 
     }
+
     let orderItem = new OrderItem();
 
     let customerInfo = new CustomerInfo();
@@ -247,6 +248,7 @@
             App.SweetAlert.showErrorAlert("Không lấy được danh sách orderItem")
         })
     }
+
 
     function getOrderItemsById(orderItemsId) {
         return $.ajax({
@@ -406,7 +408,7 @@
                     // setTimeout(function () {
                     //     App.IziToast.showSuccessAlert("Cập nhật giá sản phẩm thành công");
                     // }, 1000);
-                //
+                    //
                 }).fail(() => {
                     App.SweetAlert.showErrorAlert("update Giá sản phẩm thất bại!");
                 })
@@ -414,84 +416,172 @@
         })
     }
 
+    // function doBuyItem() {
+    //     $(".btn-buy").on("click", () => {
+    //         delete customerInfo.id;
+    //         customerInfo.fullName = $("#fullNameCustomer").val();
+    //         customerInfo.phone = $("#phoneCustomer").val();
+    //         customerInfo.birthDate = $("#bOdCustomer").val();
+    //         customerInfo.address = $("#addressCustomer").val();
+    //
+    //         $.ajax({
+    //             headers: {
+    //                 "accept": "application/json",
+    //                 "content-type": "application/json"
+    //             },
+    //             type: "POST",
+    //             url: "http://localhost:8080/api/customerinfo/create",
+    //             data: JSON.stringify(customerInfo)
+    //         }).done((data) => {
+    //             order.customerInfo = data;
+    //             order.shippedDate = new Date();
+    //             delete order.id;
+    //             getUserByUserName(usernameLogin).then(() => {
+    //                 order.user = user;
+    //                 getOrderItemsById($("#idOrderItem").val()).then(() => {
+    //                     order.orderItem = orderItem;
+    //                     $.ajax({
+    //                         headers: {
+    //                             "accept": "application/json",
+    //                             "content-type": "application/json"
+    //                         },
+    //                         type: "POST",
+    //                         url: "http://localhost:8080/api/order/create",
+    //                         data: JSON.stringify(order)
+    //                     }).done((data) => {
+    //                         App.IziToast.showSuccessAlert("Order Thành công");
+    //                         // doUpdateTotalByButton();
+    //                         $("#fullNameCustomer").val("")
+    //                         $("#phoneCustomer").val("")
+    //                         $("#bOdCustomer").val("")
+    //                         $("#addressCustomer").val("")
+    //                         $('body,html').animate({scrollTop: 0}, 750);
+    //                         setTimeout(function () {
+    //                             $(".OrderItem tbody").html("")
+    //                             // drawAllItemsCustomerOrder();
+    //                             window.location.href = "/homecustomer/product";
+    //                         }, 1000);
+    //                     }).fail((jqXHR) => {
+    //                         console.log(jqXHR);
+    //                         if (jqXHR.responseJSON) {
+    //                             $.each(jqXHR.responseJSON, (key, item) => {
+    //                                 App.IziToast.showErrorAlert(item);
+    //                             })
+    //                         }
+    //                     })
+    //                 })
+    //             })
+    //         }).fail((jqXHR) => {
+    //             console.log(jqXHR);
+    //
+    //             $('#alertCustomer .modal-alert-danger ').html('').removeClass('hide').addClass('show');
+    //             // if (jqXHR.responseJSON.message) {
+    //             //     let msg = jqXHR.responseJSON.message;
+    //             //     let str = `<label for="message" id="message-error" class="error">${msg}</label>`
+    //             //     $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
+    //             // } else
+    //             if (jqXHR.responseJSON) {
+    //                 let str = '';
+    //                 $.each(jqXHR.responseJSON, (key, item) => {
+    //                     str = `<label style="color: red;"  for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+    //                     $('#alertCustomer .modal-alert-danger').removeClass("hide").addClass("show").append(str);
+    //                 })
+    //             }
+    //         })
+    //     })
+    // }
+
     function doBuyItem() {
         $(".btn-buy").on("click", () => {
-            delete customerInfo.id;
-            customerInfo.fullName = $("#fullNameCustomer").val();
-            customerInfo.phone = $("#phoneCustomer").val();
-            customerInfo.birthDate = $("#bOdCustomer").val();
-            customerInfo.address = $("#addressCustomer").val();
-
             $.ajax({
                 headers: {
                     "accept": "application/json",
                     "content-type": "application/json"
                 },
-                type: "POST",
-                url: "http://localhost:8080/api/customerinfo/create",
-                data: JSON.stringify(customerInfo)
+                type: "GET",
+                url: "http://localhost:8080/api/orderitems/" + usernameLogin,
             }).done((data) => {
-                order.customerInfo = data;
-                order.shippedDate = new Date();
-                delete order.id;
-                getUserByUserName(usernameLogin).then(() => {
-                    order.user = user;
-                    getOrderItemsById($("#idOrderItem").val()).then(() => {
-                        order.orderItem = orderItem;
-                        $.ajax({
-                            headers: {
-                                "accept": "application/json",
-                                "content-type": "application/json"
-                            },
-                            type: "POST",
-                            url: "http://localhost:8080/api/order/create",
-                            data: JSON.stringify(order)
-                        }).done((data) => {
-                            App.IziToast.showSuccessAlert("Order Thành công");
-                            // doUpdateTotalByButton();
-                            $("#fullNameCustomer").val("")
-                            $("#phoneCustomer").val("")
-                            $("#bOdCustomer").val("")
-                            $("#addressCustomer").val("")
-                            $('body,html').animate({scrollTop: 0}, 750);
-                            setTimeout(function () {
-                                $(".OrderItem tbody").html("")
-                                // drawAllItemsCustomerOrder();
-                                window.location.href = "/homecustomer/product";
-                            }, 1000);
-                        }).fail((jqXHR) => {
-                            console.log(jqXHR);
-                            if (jqXHR.responseJSON) {
-                                $.each(jqXHR.responseJSON, (key, item) => {
-                                    App.IziToast.showErrorAlert(item);
-                                })
-                            }
+                $.each(data, (i, item) => {
+                    delete customerInfo.id;
+                    customerInfo.fullName = $("#fullNameCustomer").val();
+                    customerInfo.phone = $("#phoneCustomer").val();
+                    customerInfo.birthDate = $("#bOdCustomer").val();
+                    customerInfo.address = $("#addressCustomer").val();
+
+                    $.ajax({
+                        headers: {
+                            "accept": "application/json",
+                            "content-type": "application/json"
+                        },
+                        type: "POST",
+                        url: "http://localhost:8080/api/customerinfo/create",
+                        data: JSON.stringify(customerInfo)
+                    }).done((datatt) => {
+                        order.customerInfo = datatt;
+                        order.shippedDate = new Date();
+                        delete order.id;
+                        getUserByUserName(usernameLogin).then(() => {
+                            order.user = user;
+                            order.orderItem = item;
+
+                            $.ajax({
+                                headers: {
+                                    "accept": "application/json",
+                                    "content-type": "application/json"
+                                },
+                                type: "POST",
+                                url: "http://localhost:8080/api/order/create",
+                                data: JSON.stringify(order)
+                            }).done((data) => {
+                                App.IziToast.showSuccessAlert("Order Thành công");
+                                // doUpdateTotalByButton();
+                                // $("#fullNameCustomer").val("")
+                                // $("#phoneCustomer").val("")
+                                // $("#bOdCustomer").val("")
+                                // $("#addressCustomer").val("")
+                                // $('body,html').animate({scrollTop: 0}, 750);
+                                // setTimeout(function () {
+                                //     $(".OrderItem tbody").html("")
+                                //     // drawAllItemsCustomerOrder();
+                                //     window.location.href = "/homecustomer/product";
+                                // }, 1000);
+                            }).fail((jqXHR) => {
+                                console.log(jqXHR);
+                                if (jqXHR.responseJSON) {
+                                    $.each(jqXHR.responseJSON, (key, item) => {
+                                        App.IziToast.showErrorAlert(item);
+                                    })
+                                }
+                            })
                         })
+                    }).fail((jqXHR) => {
+                        console.log(jqXHR);
+
+                        $('#alertCustomer .modal-alert-danger ').html('').removeClass('hide').addClass('show');
+                        // if (jqXHR.responseJSON.message) {
+                        //     let msg = jqXHR.responseJSON.message;
+                        //     let str = `<label for="message" id="message-error" class="error">${msg}</label>`
+                        //     $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
+                        // } else
+                        if (jqXHR.responseJSON) {
+                            let str = '';
+                            $.each(jqXHR.responseJSON, (key, item) => {
+                                str = `<label style="color: red;"  for="${key}" id="${key}-error" class="error">${item}</label><br>`;
+                                $('#alertCustomer .modal-alert-danger').removeClass("hide").addClass("show").append(str);
+                            })
+                        }
                     })
                 })
-            }).fail((jqXHR) => {
-                console.log(jqXHR);
-
-                $('#alertCustomer .modal-alert-danger ').html('').removeClass('hide').addClass('show');
-                // if (jqXHR.responseJSON.message) {
-                //     let msg = jqXHR.responseJSON.message;
-                //     let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-                //     $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
-                // } else
-                if (jqXHR.responseJSON) {
-                    let str = '';
-                    $.each(jqXHR.responseJSON, (key, item) => {
-                        str = `<label style="color: red;"  for="${key}" id="${key}-error" class="error">${item}</label><br>`;
-                        $('#alertCustomer .modal-alert-danger').removeClass("hide").addClass("show").append(str);
-                    })
-                }
             })
-        })
+        });
+
+
     }
 
     doBuyItem();
     drawAllItemsCustomerOrder();
     doUpdateTotalByButton();
+
 </script>
 </body>
 </html>

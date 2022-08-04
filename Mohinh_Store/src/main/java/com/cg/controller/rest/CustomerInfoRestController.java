@@ -28,21 +28,13 @@ public class CustomerInfoRestController {
 
     @PostMapping("/create")
     public ResponseEntity<?> doCreate(@Validated @RequestBody CustomerInfoDTO customerInfoDTO, BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return appUtils.mapErrorToResponse(bindingResult);
-            }
-            customerInfoDTO.setId(0L);
-            CustomerInfo customerInfo1 = customerInfoDTO.toCustomer();
-            CustomerInfo customerInfo = customerInfoService.save(customerInfo1);
-            return new ResponseEntity<>(customerInfo.toCustomerDTO(), HttpStatus.OK);
-        } catch (Exception e) {
-            customerInfoDTO.setId(0L);
-            CustomerInfo customerInfo1 = customerInfoDTO.toCustomer();
-            CustomerInfo customerInfo = customerInfoService.save(customerInfo1);
-            return new ResponseEntity<>(customerInfo.toCustomerDTO(), HttpStatus.OK);
+        if (bindingResult.hasErrors()) {
+            return appUtils.mapErrorToResponse(bindingResult);
         }
-
+        customerInfoDTO.setId(0L);
+        CustomerInfo customerInfo1 = customerInfoDTO.toCustomer();
+        CustomerInfo customerInfo = customerInfoService.save(customerInfo1);
+        return new ResponseEntity<>(customerInfo.toCustomerDTO(), HttpStatus.OK);
 
     }
 }
