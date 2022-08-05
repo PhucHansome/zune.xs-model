@@ -127,7 +127,7 @@
             $.each(data, (i, item) => {
                 console.log(item.role.code);
                 let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-                let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
+                let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">Block</button>`;
                 let str = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -137,8 +137,8 @@
                         <td class="align-middle text-center "><b>${item.status}</b></td>
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
-                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            <button type="button" data-id="${item.id}" class="btn btn-outline-warning btnChangePassWord">
+                               New Password
                             </button>
                             <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
                         </td>
@@ -231,7 +231,7 @@
                     let currentRow = $('#tr_' + user.id);
 
                     let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-                    let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
+                    let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">Block</button>`;
                     let updateRow = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -242,7 +242,7 @@
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
                             <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
+                               New Password
                             </button>
                             <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
                         </td>
@@ -286,7 +286,7 @@
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
                             <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
+                               New Password
                             </button>
                             <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
                         </td>
@@ -349,7 +349,7 @@
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
                             <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
+                               New Password
                             </button>
                             <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
                         </td>
@@ -406,7 +406,7 @@
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
                             <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                New Password
                             </button>
                             <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
                         </td>

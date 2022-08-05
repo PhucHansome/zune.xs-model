@@ -52,6 +52,10 @@ public class OrderItemItemsServiceImpl implements IOrderItemsService {
         orderItemsRepository.save(orderItem);
     }
 
+    @Override
+    public List<OrderItemsDTO> findAllOrderItemsDTO(String username) {
+        return orderItemsRepository.findAllOrderItemsDTO(username);
+    }
 
     @Override
     public Optional<OrderItemsDTO> findByIdOrderItemsDTO(Long id) {

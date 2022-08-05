@@ -12,4 +12,6 @@ public interface IOrderItemsService extends IGeneralService<OrderItem> {
     Optional<OrderItemsDTO> findByIdOrderItemsDTO(Long id);
 
     List<OrderItemsDTO> findByUsername(String username);
+
+    List<OrderItemsDTO> findAllOrderItemsDTO(String username);
 }

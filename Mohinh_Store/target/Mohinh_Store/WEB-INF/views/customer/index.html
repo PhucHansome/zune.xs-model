@@ -242,7 +242,6 @@
                 addToCart();
 
             })
-            descriptionProductClick();
         }).fail(() => {
             App.SweetAlert.showErrorAlert("Customer Errors")
         })
@@ -289,8 +288,14 @@
                     setTimeout(function () {
                         App.IziToast.showSuccessAlert("Thêm vào giỏ hàng thành công!")
                     }, 500);
-                }).fail(()=>{
-                    App.IziToast.showErrorAlert("Thêm vào giỏ hàng thất bại");
+                }).fail((jqXHR) => {
+                    console.log(jqXHR);
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, (key, item) => {
+                            App.IziToast.showErrorAlert(item) ;
+                        })
+
+                    }
                 })
             });
         })

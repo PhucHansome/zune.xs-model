@@ -116,10 +116,22 @@
 
 <th:block th:replace="/product/modal-update-product :: modal-update-product"/>
 
+<th:block th:replace="/product/temp_row_product :: temp_row_product"/>
+
 
 <script>
     let product = new Product();
     let category = new Category();
+
+    let temp_row_product = $.validator.format($.trim($("#temp_row_product").val().toString()));
+
+    function addRowProduct(){
+        $("#tableListProducts tbody").prepend($(temp_row_product(product.id, product.productCode, product.image, product.productName, product.category.name, product.quantityProduct,new Intl.NumberFormat('vi-VN', {style: 'currency',currency: 'VND'}).format(product.priceProduct), product.productDescription,formatDate(product.createdAt),formatDate(product.updatedAt))));
+    }
+
+    function addRowReplaceProduct(){
+        $('#tr_' + product.id).replaceWith($(temp_row_product(product.id, product.productCode, product.image, product.productName, product.category.name, product.quantityProduct,new Intl.NumberFormat('vi-VN', {style: 'currency',currency: 'VND'}).format(product.priceProduct), product.productDescription,formatDate(product.createdAt),formatDate(product.updatedAt))))
+    }
 
     function loadAllProduct() {
         $.ajax({
@@ -132,30 +144,12 @@
         }).done((data) => {
             $.each(data, (i, item) => {
                 product = item
-                let str = `
-            <tr id="tr_${product.id}">
-                <td class="align-middle text-center"></td>
-                <td class="align-middle text-center">${product.productCode}</td>
-                <td class="align-middle text-center"><img width="80px" style="border-radius: 10px;" src="${product.image}"></td>
-                <td class="align-middle text-center " >${product.productName}</td>
-                <td class="align-middle text-center" >${product.category.name}</td>
-                <td class="align-middle text-center">${product.quantityProduct}</td>
-                <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND'
-                }).format(product.priceProduct)}</td>
-                <td class="align-middle text-center">${product.productDescription}</td>
-                <td class="align-middle text-center">${formatDate(product.createdAt)}</td>
-                <td class="align-middle text-center">${formatDate(product.updatedAt)}</td>
-                <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-secondary btn_edit"  id="btn_edit"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                 <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-danger btn-delete"  id="btn-delete"><i class="fa-solid fa-trash"></i></button></td>
-            </tr>
-            `
-                $("#tableListProducts tbody").prepend(str);
-                handleShowUpdateProduct();
-                handlerShowConfirmDelete()
-                handleShowCreateProduct()
+                addRowProduct()
+
             })
+            handleShowUpdateProduct();
+            handlerShowConfirmDelete()
+            handleShowCreateProduct()
         }).fail(() => {
             App.SweetAlert.showErrorAlert("Customer Errors")
         })
@@ -179,13 +173,13 @@
     }
 
     function handleShowCreateProduct() {
-        $("#modalAddProduct").on("click", () => {
+        $(".modalAddProduct").on("click", () => {
             $("#modal-create-product").modal("show");
         })
     }
 
     function handleShowUpdateProduct() {
-        $("#btn_edit").on("click", function () {
+        $(".btn_edit").on("click", function () {
             let id = $(this).data("id");
             getProductById(id).then(() => {
                 $("#idProductUp").val(product.id);
@@ -263,27 +257,8 @@
             product = data;
             console.log(data);
             $("#modal-create-product").modal('hide');
-            let str = `
-            <tr id="tr_${product.id}">
-                <td class="align-middle text-center"></td>
-                <td class="align-middle text-center">${product.productCode}</td>
-                <td class="align-middle text-center"><img width="80px" style="border-radius: 10px;" src="${product.image}"></td>
-                <td class="align-middle text-center " >${product.productName}</td>
-                <td class="align-middle text-center" >${product.category.name}</td>
-                <td class="align-middle text-center">${product.quantityProduct}</td>
-                <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
-                style: 'currency',
-                currency: 'VND'
-            }).format(product.priceProduct)}</td>
-                <td class="align-middle text-center">${product.productDescription}</td>
-                <td class="align-middle text-center">${formatDate(product.createdAt)}</td>
-                <td class="align-middle text-center">${formatDate(product.updatedAt)}</td>
-                <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-secondary btn_edit"  id="btn_edit"><i class="fa-solid fa-pen-to-square"></i></button></td>
-             <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-danger btn-delete"  id="btn-delete"><i class="fa-solid fa-trash"></i></button></td>
-            </tr>
-        `
-            $("#tableListProducts tbody").prepend(str);
             App.SweetAlert.showSuccessAlert("Bạn đã thêm sản phẩm thành công");
+            addRowProduct();
             handleShowUpdateProduct();
             handleShowCreateProduct();
             handlerShowConfirmDelete()
@@ -330,28 +305,9 @@
             product = data;
             console.log(data)
             $("#modal-update-product").modal('hide');
-            let currentRow = $('#tr_' + product.id);
-            let updateRow = `
-                     <tr id="tr_${product.id}">
-                        <td class="align-middle text-center"></td>
-                        <td class="align-middle text-center">${product.productCode}</td>
-                        <td class="align-middle text-center"><img width="80px" style="border-radius: 10px;" src="${product.image}"></td>
-                        <td class="align-middle text-center " >${product.productName}</td>
-                        <td class="align-middle text-center" >${product.category.name}</td>
-                        <td class="align-middle text-center">${product.quantityProduct}</td>
-                        <td class="align-middle text-center">${new Intl.NumberFormat('vi-VN', {
-                style: 'currency',
-                currency: 'VND'
-            }).format(product.priceProduct)}</td>
-                        <td class="align-middle text-center">${product.productDescription}</td>
-                        <td class="align-middle text-center">${formatDate(product.createdAt)}</td>
-                        <td class="align-middle text-center">${formatDate(product.updatedAt)}</td>
-                        <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-secondary btn_edit"  id="btn_edit"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                     <td class="align-middle text-center "><button data-id="${product.id}" class="btn btn-danger btn-delete"  id="btn-delete"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-            `
+
+            addRowReplaceProduct();
             App.SweetAlert.showSuccessAlert("Chỉnh sửa sản phẩm thành công");
-            currentRow.replaceWith(updateRow);
             handleShowCreateProduct();
             handleShowUpdateProduct();
             handlerShowConfirmDelete();
@@ -383,10 +339,10 @@
 
         if (month.length < 2) month = '0' + month;
         if (day.length < 2) day = '0' + day;
-        if (day === null || month === null || year === null) {
+        if (day === null || month === null || year === null)
             return "chưa cập nhật";
-        }
-        return [day, month, year].join('-');
+
+        return [day, month, year].join('/');
     }
 
     $('#frmCreateProduct').validate({

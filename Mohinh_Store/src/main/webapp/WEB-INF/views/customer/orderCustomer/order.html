@@ -245,7 +245,22 @@
         }).done((data) => {
             orderItem = data;
         }).fail(() => {
-            App.SweetAlert.showErrorAlert("Không lấy được danh sách orderItem")
+            App.IziToast.showErrorAlert("giỏ hàng trống")
+            setTimeout(function () {
+                App.IziToast.showErrorAlert("Trở lại trang chủ sau 3s")
+                setTimeout(function () {
+                    App.IziToast.showErrorAlert("3")
+                    setTimeout(function () {
+                        App.IziToast.showErrorAlert("2")
+                        setTimeout(function () {
+                            App.IziToast.showErrorAlert("1")
+                            setTimeout(function () {
+                                window.location.href = "/homecustomer/product";
+                            }, 1000);
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
         })
     }
 
@@ -326,8 +341,10 @@
             .done(() => {
                 $("#tr_" + orderItemsId).remove();
                 App.IziToast.showSuccessAlert("Xóa Sản Phẩm Khỏi giỏ hàng thành công");
-                drawAllItemsCustomerOrder()
                 doUpdateTotalByButton();
+                getOrderItem()
+
+
             }).fail(() => {
             App.SweetAlert.showErrorAlert("Xóa Sản Phẩm thất bại ");
         })
@@ -416,80 +433,6 @@
         })
     }
 
-    // function doBuyItem() {
-    //     $(".btn-buy").on("click", () => {
-    //         delete customerInfo.id;
-    //         customerInfo.fullName = $("#fullNameCustomer").val();
-    //         customerInfo.phone = $("#phoneCustomer").val();
-    //         customerInfo.birthDate = $("#bOdCustomer").val();
-    //         customerInfo.address = $("#addressCustomer").val();
-    //
-    //         $.ajax({
-    //             headers: {
-    //                 "accept": "application/json",
-    //                 "content-type": "application/json"
-    //             },
-    //             type: "POST",
-    //             url: "http://localhost:8080/api/customerinfo/create",
-    //             data: JSON.stringify(customerInfo)
-    //         }).done((data) => {
-    //             order.customerInfo = data;
-    //             order.shippedDate = new Date();
-    //             delete order.id;
-    //             getUserByUserName(usernameLogin).then(() => {
-    //                 order.user = user;
-    //                 getOrderItemsById($("#idOrderItem").val()).then(() => {
-    //                     order.orderItem = orderItem;
-    //                     $.ajax({
-    //                         headers: {
-    //                             "accept": "application/json",
-    //                             "content-type": "application/json"
-    //                         },
-    //                         type: "POST",
-    //                         url: "http://localhost:8080/api/order/create",
-    //                         data: JSON.stringify(order)
-    //                     }).done((data) => {
-    //                         App.IziToast.showSuccessAlert("Order Thành công");
-    //                         // doUpdateTotalByButton();
-    //                         $("#fullNameCustomer").val("")
-    //                         $("#phoneCustomer").val("")
-    //                         $("#bOdCustomer").val("")
-    //                         $("#addressCustomer").val("")
-    //                         $('body,html').animate({scrollTop: 0}, 750);
-    //                         setTimeout(function () {
-    //                             $(".OrderItem tbody").html("")
-    //                             // drawAllItemsCustomerOrder();
-    //                             window.location.href = "/homecustomer/product";
-    //                         }, 1000);
-    //                     }).fail((jqXHR) => {
-    //                         console.log(jqXHR);
-    //                         if (jqXHR.responseJSON) {
-    //                             $.each(jqXHR.responseJSON, (key, item) => {
-    //                                 App.IziToast.showErrorAlert(item);
-    //                             })
-    //                         }
-    //                     })
-    //                 })
-    //             })
-    //         }).fail((jqXHR) => {
-    //             console.log(jqXHR);
-    //
-    //             $('#alertCustomer .modal-alert-danger ').html('').removeClass('hide').addClass('show');
-    //             // if (jqXHR.responseJSON.message) {
-    //             //     let msg = jqXHR.responseJSON.message;
-    //             //     let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-    //             //     $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
-    //             // } else
-    //             if (jqXHR.responseJSON) {
-    //                 let str = '';
-    //                 $.each(jqXHR.responseJSON, (key, item) => {
-    //                     str = `<label style="color: red;"  for="${key}" id="${key}-error" class="error">${item}</label><br>`;
-    //                     $('#alertCustomer .modal-alert-danger').removeClass("hide").addClass("show").append(str);
-    //                 })
-    //             }
-    //         })
-    //     })
-    // }
 
     function doBuyItem() {
         $(".btn-buy").on("click", () => {
@@ -534,17 +477,6 @@
                                 data: JSON.stringify(order)
                             }).done((data) => {
                                 App.IziToast.showSuccessAlert("Order Thành công");
-                                // doUpdateTotalByButton();
-                                // $("#fullNameCustomer").val("")
-                                // $("#phoneCustomer").val("")
-                                // $("#bOdCustomer").val("")
-                                // $("#addressCustomer").val("")
-                                // $('body,html').animate({scrollTop: 0}, 750);
-                                // setTimeout(function () {
-                                //     $(".OrderItem tbody").html("")
-                                //     // drawAllItemsCustomerOrder();
-                                //     window.location.href = "/homecustomer/product";
-                                // }, 1000);
                             }).fail((jqXHR) => {
                                 console.log(jqXHR);
                                 if (jqXHR.responseJSON) {
@@ -556,13 +488,7 @@
                         })
                     }).fail((jqXHR) => {
                         console.log(jqXHR);
-
                         $('#alertCustomer .modal-alert-danger ').html('').removeClass('hide').addClass('show');
-                        // if (jqXHR.responseJSON.message) {
-                        //     let msg = jqXHR.responseJSON.message;
-                        //     let str = `<label for="message" id="message-error" class="error">${msg}</label>`
-                        //     $('#modal-update-product .modal-alert-danger').removeClass("hide").addClass("show").append(str);
-                        // } else
                         if (jqXHR.responseJSON) {
                             let str = '';
                             $.each(jqXHR.responseJSON, (key, item) => {
@@ -572,10 +498,15 @@
                         }
                     })
                 })
+                setTimeout(function () {
+                    $('body,html').animate({scrollTop: 0}, 750);
+                    setTimeout(function () {
+                        $(".OrderItem tbody").html("")
+                        window.location.href = "/homecustomer/product";
+                    }, 1000);
+                }, 1000);
             })
         });
-
-
     }
 
     doBuyItem();

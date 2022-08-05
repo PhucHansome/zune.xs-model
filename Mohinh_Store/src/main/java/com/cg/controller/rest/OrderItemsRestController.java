@@ -1,6 +1,7 @@
 package com.cg.controller.rest;
 
 
+import com.cg.exception.EmailExistsException;
 import com.cg.exception.ResourceNotFoundException;
 import com.cg.model.OrderItem;
 import com.cg.model.Product;
@@ -35,28 +36,41 @@ public class OrderItemsRestController {
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }
+
         orderItemDTO.setGrandTotal(orderItemDTO.getProduct().getPriceProduct());
         orderItemDTO.setQuantityOrdered(new BigDecimal(1));
+
+        List<OrderItemsDTO> orderItemsDTO = orderItemsService.findAllOrderItemsDTO(orderItemDTO.toOderItem().getUser());
+
+        for (OrderItemsDTO orderItemsDTO1 : orderItemsDTO) {
+            if (orderItemsDTO1.getUser().equals(orderItemDTO.getUser())) {
+                if (orderItemsDTO1.getProduct().getId() == orderItemDTO.getProduct().getId()) {
+                  throw new EmailExistsException("Sản phẩm này đã có trong giỏ hàng");
+                }
+            }
+        }
         OrderItem orderItem = orderItemsService.save(orderItemDTO.toOderItem());
         return new ResponseEntity<>(orderItem.toOderItemsDTO(), HttpStatus.CREATED);
+
     }
 
+
     @GetMapping("/{username}")
-    public ResponseEntity<?> showOrderItems(@PathVariable String username){
+    public ResponseEntity<?> showOrderItems(@PathVariable String username) {
         List<OrderItemsDTO> orderItemsDTO = orderItemsService.findByUsername(username);
-        if (orderItemsDTO.isEmpty()){
-            return new ResponseEntity<>("Giỏ hàng rỗng",HttpStatus.NOT_FOUND);
+        if (orderItemsDTO.isEmpty()) {
+            return new ResponseEntity<>("Giỏ hàng rỗng", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(orderItemsDTO, HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<?> getOrderItemById(@PathVariable Long id){
+    public ResponseEntity<?> getOrderItemById(@PathVariable Long id) {
         Optional<OrderItemsDTO> orderItemOptional = orderItemsService.findByIdOrderItemsDTO(id);
-        if(!orderItemOptional.isPresent()){
-            throw  new ResourceNotFoundException("Invalid User Id");
+        if (!orderItemOptional.isPresent()) {
+            throw new ResourceNotFoundException("Invalid User Id");
         }
-        return new ResponseEntity<>(orderItemOptional.get().toOderItem(),HttpStatus.OK);
+        return new ResponseEntity<>(orderItemOptional.get().toOderItem(), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{orderItemsId}")
@@ -72,13 +86,12 @@ public class OrderItemsRestController {
 
         }
     }
+
     @PutMapping("/update/")
-    public  ResponseEntity<?> doUpdate(@RequestBody OrderItemsDTO orderItemsDTO, BindingResult bindingResult){
+    public ResponseEntity<?> doUpdate(@RequestBody OrderItemsDTO orderItemsDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
         }
-
-
         orderItemsDTO.setGrandTotal(new BigDecimal(String.valueOf(orderItemsDTO.getQuantityOrdered().multiply(orderItemsDTO.getProduct().getPriceProduct()))));
         OrderItem orderItem = orderItemsService.save(orderItemsDTO.toOderItem());
 
