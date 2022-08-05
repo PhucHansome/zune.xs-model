@@ -177,7 +177,7 @@
                     </td>
                     <td class="text-left align-middle">
                         <div class="input-group btn-block" style="max-width: 134px;">
-                            <input style="width: 60px;" type="number" id="inputQuantity" max="10"
+                            <input style="width: 60px;" type="number" id="inputQuantity_${item.id}" max="10"
                                    name="inputQuantity" value="${item.quantityOrdered}"
                                    class="form-control inputQuantity">
                             <span class="input-group-btn">
@@ -270,6 +270,8 @@
             url: "http://localhost:8080/api/orderitems/id/" + orderItemsId
         }).done((data) => {
             orderItem = data;
+            console.log("Orderitem .done: ");
+            console.log(orderItem);
         }).fail((jqXHR) => {
             App.IziToast.showErrorAlert("Giỏ hàng trống");
             console.log(jqXHR);
@@ -338,8 +340,6 @@
                 App.IziToast.showSuccessAlert("Xóa Sản Phẩm Khỏi giỏ hàng thành công");
                 doUpdateTotalByButton();
                 getOrderItem()
-
-
             }).fail(() => {
             App.SweetAlert.showErrorAlert("Xóa Sản Phẩm thất bại ");
         })
@@ -349,8 +349,8 @@
         $(".btn-update-total").on("click", function () {
             let id = $(this).data("id")
             getOrderItemsById(id).then(() => {
-                orderItem.quantityOrdered = $("#inputQuantity").val();
-                let inputQuantity = $("#inputQuantity").val();
+                orderItem.quantityOrdered = $("#inputQuantity_"+ id).val();
+                let inputQuantity = $("#inputQuantity_" + id).val();
                 if (inputQuantity < 0) {
                     App.IziToast.showErrorAlert("Giỏ hàng tối thiểu là 1 sản phẩm")
                     return
@@ -368,53 +368,43 @@
                     url: "http://localhost:8080/api/orderitems/update/",
                     data: JSON.stringify(orderItem)
                 }).done((data) => {
-                    console.log(data);
+                    // console.log(data);
                     let currentRow = $('#tr_' + data.id);
                     let updateRow = `
-                     <tr id="tr_${data.id}">
-                     <input type="hidden" id="idOrderItem" value="${data.id}">
-                    <td class="text-center align-middle">
-                        <a href="#"><img
-                                width="80px"
-                                 height="100px" src="${data.product.image}"
-                                alt=""
-                                title=""
-                                class="img-thumbnail"></a>
-                    </td>
-                    <td class="text-left align-middle">
-                        <a href="">${data.product.productName}</a>
-                        <br>
-                        <small>Mã hàng: ${data.product.productCode}</small>
-                    </td>
-                    <td class="text-left align-middle">
-                        <div class="input-group btn-block" style="max-width: 134px;">
-                            <input style="width: 60px;" type="number" id="inputQuantity" max="10" min="1"
-                                   name="inputQuantity" oninput="this.value = Math.abs(this.value)"
-                                    value="${data.quantityOrdered}"
-                                   class="form-control inputQuantity">
-                            <span class="input-group-btn">
-                                    <button data-id="${data.id}"  type="button" title="" class="btn btn-primary btn-update-total" >
-                                        <i class="fa-solid fa-arrows-rotate"></i>
-                                    </button>
-                                    <button type="button"
-                                              class="btn btn-danger btn-delete-cart"
-                                              data-id="${data.id}"
-                                             ><i
-                                              class="fa fa-times-circle"></i></button>
-                            </span>
-                        </div>
-                    </td>
-                    <td class="text-right align-middle" >${new Intl.NumberFormat('vi-VN', {
-                        style: 'currency',
-                        currency: 'VND'
-                    }).format(data.product.priceProduct)}</td>
-                    <td class="text-right align-middle">${new Intl.NumberFormat('vi-VN', {
-                        style: 'currency',
-                        currency: 'VND'
-                    }).format(data.grandTotal)}</td>
-                </tr>
-            `
-                    App.IziToast.showSuccessAlert("Cập nhật giá sản phẩm thành công");
+                                 <tr id="tr_${data.id}">
+                                     <input type="hidden" id="idOrderItem" value="${data.id}">
+                                    <td class="text-center align-middle">
+                                        <a href="#"><img width="80px" height="100px" src="${data.product.image}" alt="" title="" class="img-thumbnail"></a>
+                                    </td>
+                                    <td class="text-left align-middle">
+                                        <a href="">${data.product.productName}</a>
+                                        <br>
+                                        <small>Mã hàng: ${data.product.productCode}</small>
+                                    </td>
+                                    <td class="text-left align-middle">
+                                        <div class="input-group btn-block" style="max-width: 134px;">
+                                            <input style="width: 60px;" type="number" id="inputQuantity_${data.id}" max="10" min="1"  name="inputQuantity" value="${data.quantityOrdered}" class="form-control inputQuantity">
+                                            <span class="input-group-btn">
+                                                    <button data-id="${data.id}"  type="button" title="" class="btn btn-primary btn-update-total" >
+                                                        <i class="fa-solid fa-arrows-rotate"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-delete-cart"data-id="${data.id}" >
+                                                    <i class="fa fa-times-circle"></i>
+                                                    </button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="text-right align-middle" >${new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(data.product.priceProduct)}</td>
+                                    <td class="text-right align-middle">${new Intl.NumberFormat('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND'
+                                    }).format(data.grandTotal)}</td>
+                                </tr>
+                        `
+
                     currentRow.replaceWith(updateRow);
                     // location.reload();
                     // setTimeout(function () {
@@ -496,9 +486,9 @@
                         }
                     })
                 })
-                App.IziToast.showSuccessAlert("Order Thành công");
                 setTimeout(function () {
                     $('body,html').animate({scrollTop: 0}, 750);
+                    App.IziToast.showSuccessAlert("Order Thành công");
                     setTimeout(function () {
                         $(".OrderItem tbody").html("")
                         window.location.href = "/homecustomer/product";
@@ -511,7 +501,6 @@
     doBuyItem();
     drawAllItemsCustomerOrder();
     doUpdateTotalByButton();
-
 </script>
 </body>
 </html>
