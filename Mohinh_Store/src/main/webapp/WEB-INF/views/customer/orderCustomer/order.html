@@ -49,8 +49,7 @@
 
                                     <h2><span>Giỏ Hàng</span></h2>
                                     <p>Giỏ hàng của bạn có những sản phẩm sau</p>
-                                    <form action="https://zunezx.com/index.php?route=checkout/cart/edit" method="post"
-                                          enctype="multipart/form-data">
+
                                         <div class="table-responsive">
                                             <table class="table OrderItem">
                                                 <thead>
@@ -67,8 +66,6 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                    </form>
-
                                 </div>
                             </div>
                         </div>
@@ -107,7 +104,7 @@
                                     <div class="buttons clearfix">
                                         <br>
                                         <div class="pull-right">
-                                            <button id="btn-buy"
+                                            <button
                                                     class="btn btn-primary btn-buy">Thanh toán
                                             </button>
                                         </div>
@@ -139,9 +136,6 @@
 
 <script>
 
-    function tai_lai_trang() {
-
-    }
 
     let orderItem = new OrderItem();
 
@@ -187,12 +181,12 @@
                                    name="inputQuantity" value="${item.quantityOrdered}"
                                    class="form-control inputQuantity">
                             <span class="input-group-btn">
-                                    <button data-id="${item.id}" id="btn-update-total"  type="button" title="" class="btn btn-primary btn-update-total" >
+                                    <button data-id="${item.id}"   type="button" title="" class="btn btn-primary btn-update-total" >
                                         <i class="fa-solid fa-arrows-rotate "></i>
                                     </button>
                                     <button type="button"
                                               class="btn btn-danger btn-delete-cart"
-                                              data-id="${item.id}" id="btn-delete-cart"
+                                              data-id="${item.id}"
                                              ><i
                                               class="fa fa-times-circle"></i></button>
                             </span>
@@ -209,11 +203,12 @@
                 </tr>
                 `
                 $(".OrderItem tbody").append(str)
-                $("#btn-delete-cart").off();
+                $(".btn-delete-cart").off();
                 $(".btn-update-total").off();
-                confirmDelete();
-                doUpdateTotalByButton();
+
             });
+            confirmDelete();
+            doUpdateTotalByButton();
         }).fail(() => {
             App.IziToast.showErrorAlert("giỏ hàng trống")
             setTimeout(function () {
@@ -398,12 +393,12 @@
                                     value="${data.quantityOrdered}"
                                    class="form-control inputQuantity">
                             <span class="input-group-btn">
-                                    <button data-id="${data.id}" id="btn-update-total"  type="button" title="" class="btn btn-primary btn-update-total" >
+                                    <button data-id="${data.id}"  type="button" title="" class="btn btn-primary btn-update-total" >
                                         <i class="fa-solid fa-arrows-rotate"></i>
                                     </button>
                                     <button type="button"
                                               class="btn btn-danger btn-delete-cart"
-                                              data-id="${data.id}" id="btn-delete-cart"
+                                              data-id="${data.id}"
                                              ><i
                                               class="fa fa-times-circle"></i></button>
                             </span>
@@ -421,11 +416,14 @@
             `
                     App.IziToast.showSuccessAlert("Cập nhật giá sản phẩm thành công");
                     currentRow.replaceWith(updateRow);
-                    location.reload();
+                    // location.reload();
                     // setTimeout(function () {
                     //     App.IziToast.showSuccessAlert("Cập nhật giá sản phẩm thành công");
                     // }, 1000);
                     //
+                    doUpdateTotalByButton()
+                    doBuyItem();
+                    confirmDelete()
                 }).fail(() => {
                     App.SweetAlert.showErrorAlert("update Giá sản phẩm thất bại!");
                 })
@@ -476,7 +474,7 @@
                                 url: "http://localhost:8080/api/order/create",
                                 data: JSON.stringify(order)
                             }).done((data) => {
-                                App.IziToast.showSuccessAlert("Order Thành công");
+
                             }).fail((jqXHR) => {
                                 console.log(jqXHR);
                                 if (jqXHR.responseJSON) {
@@ -498,6 +496,7 @@
                         }
                     })
                 })
+                App.IziToast.showSuccessAlert("Order Thành công");
                 setTimeout(function () {
                     $('body,html').animate({scrollTop: 0}, 750);
                     setTimeout(function () {
