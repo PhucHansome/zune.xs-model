@@ -464,10 +464,10 @@
                                 url: "http://localhost:8080/api/order/create",
                                 data: JSON.stringify(order)
                             }).done((data) => {
-                                App.IziToast.showSuccessAlert("Order Thành công");
                                 setTimeout(function () {
                                     $('body,html').animate({scrollTop: 0}, 750);
                                     setTimeout(function () {
+                                        App.IziToast.showSuccessAlert("Order Thành công");
                                         $(".OrderItem tbody").html("")
                                         window.location.href = "/homecustomer/product";
                                     }, 1000);

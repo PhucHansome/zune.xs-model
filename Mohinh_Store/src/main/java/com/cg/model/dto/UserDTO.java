@@ -47,7 +47,7 @@ public class UserDTO  {
     @NotBlank(message = "Trạng thái không được để trống")
     private String status;
 
-    @NotBlank(message = "Url Ảnh không được để trống")
+//    @NotBlank(message = "Url Ảnh không được để trống")
     private String image;
 
     public UserDTO(Long id, String username, String status) {
