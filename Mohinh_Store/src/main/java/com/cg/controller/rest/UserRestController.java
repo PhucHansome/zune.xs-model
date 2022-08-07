@@ -39,21 +39,22 @@ public class UserRestController {
 
 
     @GetMapping
-    public ResponseEntity<?> showListUser(){
+    public ResponseEntity<?> showListUser() {
         List<UserDTO> userDTOList = userService.findAllUserDTOByDeletedIsFailse();
         return new ResponseEntity<>(userDTOList, HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id){
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
         Optional<User> userOptional = userService.findById(id);
-        if(!userOptional.isPresent()){
-            throw  new ResourceNotFoundException("Invalid User Id");
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFoundException("Invalid User Id");
         }
-        return new ResponseEntity<>(userOptional.get().toUserDTO(),HttpStatus.OK);
+        return new ResponseEntity<>(userOptional.get().toUserDTO(), HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?>updatePassword(@Validated @RequestBody UserDTO userDTO,BindingResult bindingResult){
+    public ResponseEntity<?> updatePassword(@Validated @RequestBody UserDTO userDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
@@ -68,8 +69,8 @@ public class UserRestController {
     }
 
     @PutMapping("/update/all")
-    public ResponseEntity<?>updateAll(@RequestBody UserDTO userDTO,BindingResult bindingResult){
-       Optional<UserDTO> userDTO1 = userService.findUserDTOById(userDTO.getId());
+    public ResponseEntity<?> updateAll(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
+        Optional<UserDTO> userDTO1 = userService.findUserDTOById(userDTO.getId());
 
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
@@ -80,7 +81,7 @@ public class UserRestController {
             throw new ResourceNotFoundException("Customer ID invalid");
         }
 
-        if(userDTO.getRole().getId() < 1 || userDTO.getRole().getId() >2){
+        if (userDTO.getRole().getId() < 1 || userDTO.getRole().getId() > 2) {
             throw new ResourceNotFoundException("Role không tồn tại");
         }
         userDTO.setPassword(userDTO1.get().getPassword());
@@ -89,7 +90,7 @@ public class UserRestController {
     }
 
     @PutMapping("/active")
-    public ResponseEntity<?>updateActive(@RequestBody UserDTO userDTO,BindingResult bindingResult){
+    public ResponseEntity<?> updateActive(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
@@ -99,13 +100,16 @@ public class UserRestController {
         if (!existId) {
             throw new ResourceNotFoundException("Customer ID invalid");
         }
+
+
         userDTO.setStatus("Active");
         User user = userService.saveNoPassword(userDTO.toUser());
         return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
+
     }
 
     @PutMapping("/block")
-    public ResponseEntity<?>updateBlock(@RequestBody UserDTO userDTO,BindingResult bindingResult){
+    public ResponseEntity<?> updateBlock(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return appUtils.mapErrorToResponse(bindingResult);
@@ -115,17 +119,20 @@ public class UserRestController {
         if (!existId) {
             throw new ResourceNotFoundException("Customer ID invalid");
         }
+
+
         userDTO.setStatus("Block");
         User user = userService.saveNoPassword(userDTO.toUser());
         return new ResponseEntity<>(user.toUserDTO(), HttpStatus.ACCEPTED);
+
     }
 
     @GetMapping("/name/{username}")
-    public ResponseEntity<?> getUsernameByName(@Validated @PathVariable String username){
+    public ResponseEntity<?> getUsernameByName(@Validated @PathVariable String username) {
         Optional<User> userOptional = userService.findByUsername(username);
-        if(!userOptional.isPresent()){
-            throw  new ResourceNotFoundException("Invalid UserName");
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFoundException("Invalid UserName");
         }
-        return new ResponseEntity<>(userOptional.get().toUserDTO(),HttpStatus.OK);
+        return new ResponseEntity<>(userOptional.get().toUserDTO(), HttpStatus.OK);
     }
 }

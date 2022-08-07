@@ -216,8 +216,14 @@
 
     function handleActive() {
         $(".btn-active").on("click", function () {
+
+            if ($("#ursernameLoFirst").text() !== "admin@gg.cc"){
+                App.IziToast.showErrorAlert("Tài khoản của bạn không đủ thẩm quyền")
+                return;
+            }
             let id = $(this).data("id");
             getUserById(id).then(() => {
+
                 $.ajax({
                     headers: {
                         "accept": "application/json",
@@ -253,7 +259,13 @@
                     unBindAll()
                     groupHandle()
                 }).fail((jqXHR) => {
-                    console.log(jqXHR)
+                    console.log(jqXHR);
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, (key, item) => {
+                            App.IziToast.showErrorAlert(item) ;
+                        })
+
+                    }
                 })
             })
         })
@@ -261,8 +273,13 @@
 
     function handleBlock() {
         $(".btn-blockk").on("click", function () {
+            if ($("#ursernameLoFirst").text() !== "admin@gg.cc"){
+                App.IziToast.showErrorAlert("Tài khoản của bạn không đủ thẩm quyền")
+                return;
+            }
             let id = $(this).data("id");
             getUserById(id).then(() => {
+
                 $.ajax({
                     headers: {
                         "accept": "application/json",
@@ -297,15 +314,13 @@
                     unBindAll()
                     groupHandle()
                 }).fail((jqXHR) => {
-                    // $('#modalCreateUser .modal-alert-danger ').html('').removeClass('hide').addClass('show');
-                    // if (jqXHR.responseJSON) {
-                    //     let str = '';
-                    //     $.each(jqXHR.responseJSON, (key, item) => {
-                    //         str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
-                    //         $('#modalCreateUser .modal-alert-danger').append(str);
-                    //     })
-                    // }
-                    console.log(jqXHR)
+                    console.log(jqXHR);
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, (key, item) => {
+                            App.IziToast.showErrorAlert(item) ;
+                        })
+
+                    }
                 })
             })
         })

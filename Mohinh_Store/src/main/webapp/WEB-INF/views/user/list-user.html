@@ -127,7 +127,7 @@
             $.each(data, (i, item) => {
                 console.log(item.role.code);
                 let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-                let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">Block</button>`;
+                let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">Block</button>`;
                 let str = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -216,8 +216,14 @@
 
     function handleActive() {
         $(".btn-active").on("click", function () {
+
+            if ($("#ursernameLoFirst").text() !== "admin@gg.cc"){
+                App.IziToast.showErrorAlert("Tài khoản của bạn không đủ thẩm quyền")
+                return;
+            }
             let id = $(this).data("id");
             getUserById(id).then(() => {
+
                 $.ajax({
                     headers: {
                         "accept": "application/json",
@@ -231,7 +237,7 @@
                     let currentRow = $('#tr_' + user.id);
 
                     let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-                    let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">Block</button>`;
+                    let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">Block</button>`;
                     let updateRow = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -253,16 +259,27 @@
                     unBindAll()
                     groupHandle()
                 }).fail((jqXHR) => {
-                    console.log(jqXHR)
+                    console.log(jqXHR);
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, (key, item) => {
+                            App.IziToast.showErrorAlert(item) ;
+                        })
+
+                    }
                 })
             })
         })
     }
 
     function handleBlock() {
-        $(".btn-blockk").on("click", function () {
+        $(".btn-block").on("click", function () {
+            if ($("#ursernameLoFirst").text() !== "admin@gg.cc"){
+                App.IziToast.showErrorAlert("Tài khoản của bạn không đủ thẩm quyền")
+                return;
+            }
             let id = $(this).data("id");
             getUserById(id).then(() => {
+
                 $.ajax({
                     headers: {
                         "accept": "application/json",
@@ -275,7 +292,7 @@
                     user = item;
                     let currentRow = $('#tr_' + user.id);
                     let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-                    let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
+                    let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">block</button>`;
                     let updateRow = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -297,15 +314,13 @@
                     unBindAll()
                     groupHandle()
                 }).fail((jqXHR) => {
-                    // $('#modalCreateUser .modal-alert-danger ').html('').removeClass('hide').addClass('show');
-                    // if (jqXHR.responseJSON) {
-                    //     let str = '';
-                    //     $.each(jqXHR.responseJSON, (key, item) => {
-                    //         str += `<label for="${key}" id="${key}-error" class="error">${item}</label><br>`;
-                    //         $('#modalCreateUser .modal-alert-danger').append(str);
-                    //     })
-                    // }
-                    console.log(jqXHR)
+                    console.log(jqXHR);
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, (key, item) => {
+                            App.IziToast.showErrorAlert(item) ;
+                        })
+
+                    }
                 })
             })
         })
@@ -343,7 +358,7 @@
             App.SweetAlert.showSuccessAlert("Đăng ký thành công!!");
 
             let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-            let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
+            let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">block</button>`;
             let str = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -400,7 +415,7 @@
             user = item;
             let currentRow = $('#tr_' + user.id);
             let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-            let strBlock = `<button class="btn btn-outline-danger btn-blockk" data-id="${item.id}">block</button>`;
+            let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">block</button>`;
             let updateRow = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
