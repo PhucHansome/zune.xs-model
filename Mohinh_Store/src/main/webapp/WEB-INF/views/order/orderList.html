@@ -61,7 +61,7 @@
                     <div class="col-5 float-lg-right">
                         <div class="row">
                             <div class="col-8">
-                                <input type="search" name="searchOrder" class="form-control" id="searchOrder">
+                                <input type="search" placeholder="Text search..." name="searchOrder" class="form-control" id="searchOrder">
                             </div>
                             <div class="col-4">
                                 <button id="btn-searchOrder" class="btn btn-youtube btn-searchOrder">Search</button>
@@ -132,7 +132,6 @@
 
 <script>
     let order = new Order();
-
     let product = new Product();
     let orderItem = new OrderItem();
     let customerInfo = new CustomerInfo();
@@ -173,11 +172,12 @@
             </tr>
             `
                 $('#tableListOrder tbody').prepend(str);
-                handleShowView();
-                doComplete()
-                doCancel()
+
                 sum +=(order.orderItem.grandTotal)
             })
+            handleShowView();
+            doComplete()
+            doCancel()
             $("#grandTotalAll").text(new Intl.NumberFormat('vi-VN', {
                 style: 'currency',
                 currency: 'VND'
@@ -364,7 +364,6 @@
         })
     }
 
-
     function doComplete() {
         $(".btn-CheckOut").on("click", function () {
             let id = $(this).data("id")
@@ -405,7 +404,6 @@
                                 </tr>
                                `
                     currentRow.replaceWith(str);
-                    doComplete()
                     handleShowView()
                     doCancel()
                     App.IziToast.showSuccessAlert("Thay đổi trạng thái thành công")
@@ -459,7 +457,7 @@
                     currentRow.replaceWith(str);
                     doComplete()
                     handleShowView()
-                    doCancel()
+
                     App.IziToast.showSuccessAlert("Thay đổi trạng thái thành công")
                 }).fail(() => {
                     App.IziToast.showErrorAlert("Thay đổi trạng thái thất bại")

@@ -51,9 +51,8 @@
                     </div>
                     <div class="col-4 float-lg-right">
                         <button type="button" style="margin-bottom: 10px" id="modalAdd"
-                                class="btn btn-outline-primary float-right  modalAdd">
+                                class="btn btn-primary float-right  modalAdd">
                             <i class="fa fa-plus" aria-hidden="true"></i>
-                            Create User
                         </button>
                     </div>
                 </div>
@@ -126,8 +125,8 @@
             console.log(data)
             $.each(data, (i, item) => {
                 console.log(item.role.code);
-                let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-                let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">Block</button>`;
+                let strActive = `<button data-id="${item.id}"  class="btn btn-success btn-active"><i class="fa-solid fa-check"></i></button>`;
+                let strBlock = `<button class="btn btn-danger btn-block-user" data-id="${item.id}"><i class="fa-solid fa-ban"></i></button>`;
                 let str = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -137,10 +136,10 @@
                         <td class="align-middle text-center "><b>${item.status}</b></td>
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
-                            <button type="button" data-id="${item.id}" class="btn btn-outline-warning btnChangePassWord">
-                               New Password
+                            <button type="button" data-id="${item.id}" class="btn btn-warning btnChangePassWord">
+                                                     <i class="fa-solid fa-key"></i>
                             </button>
-                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
+                            <button class="btn btn-danger btn-updateRemaining" data-id="${item.id}"><i class="fa-solid fa-square-pen"></i></button>
                         </td>
                     </tr>
                 `
@@ -149,7 +148,7 @@
 
             // <button data-id="${item.id}" style="margin-right: 10px"
             // className="btn btn-outline-success btn-active">Active</button>
-            // <button className="btn btn-outline-danger btn-block" data-id="${item.id}">block</button>
+            // <button className="btn btn-outline-danger btn-block-user" data-id="${item.id}">block</button>
 
             groupHandle();
 
@@ -236,8 +235,8 @@
                     user = item;
                     let currentRow = $('#tr_' + user.id);
 
-                    let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-                    let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">Block</button>`;
+                    let strActive = `<button data-id="${item.id}"  class="btn btn-success btn-active"><i class="fa-solid fa-check"></i></button>`;
+                    let strBlock = `<button class="btn btn-danger btn-block-user" data-id="${item.id}"><i class="fa-solid fa-ban"></i></button>`;
                     let updateRow = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -247,10 +246,10 @@
                         <td class="align-middle text-center "><b>${item.status}</b></td>
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
-                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
-                               New Password
+                            <button type="button" data-id="${item.id}" class="btn btn-warning btnChangePassWord">
+                       <i class="fa-solid fa-key"></i>
                             </button>
-                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
+                            <button class="btn btn-danger btn-updateRemaining" data-id="${item.id}"><i class="fa-solid fa-square-pen"></i></button>
                         </td>
                     </tr>
                     `
@@ -272,7 +271,7 @@
     }
 
     function handleBlock() {
-        $(".btn-block").on("click", function () {
+        $(".btn-block-user").on("click", function () {
             if ($("#ursernameLoFirst").text() !== "admin@gg.cc"){
                 App.IziToast.showErrorAlert("Tài khoản của bạn không đủ thẩm quyền")
                 return;
@@ -291,8 +290,8 @@
                 }).done((item) => {
                     user = item;
                     let currentRow = $('#tr_' + user.id);
-                    let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-                    let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">block</button>`;
+                    let strActive = `<button data-id="${item.id}"  class="btn btn-success btn-active"><i class="fa-solid fa-check"></i></button>`;
+                    let strBlock = `<button class="btn btn-danger btn-block-user" data-id="${item.id}"><i class="fa-solid fa-ban"></i></button>`;
                     let updateRow = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -302,10 +301,10 @@
                         <td class="align-middle text-center "><b>${item.status}</b></td>
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
-                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
-                               New Password
+                            <button type="button" data-id="${item.id}" class="btn btn-warning btnChangePassWord">
+                          <i class="fa-solid fa-key"></i>
                             </button>
-                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
+                            <button class="btn btn-danger btn-updateRemaining" data-id="${item.id}"><i class="fa-solid fa-square-pen"></i></button>
                         </td>
                     </tr>
                     `
@@ -357,8 +356,8 @@
             $("#modalCreateUser").modal('hide');
             App.SweetAlert.showSuccessAlert("Đăng ký thành công!!");
 
-            let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-            let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">block</button>`;
+            let strActive = `<button data-id="${item.id}"  class="btn btn-success btn-active"><i class="fa-solid fa-check"></i></button>`;
+            let strBlock = `<button class="btn btn-danger btn-block-user" data-id="${item.id}"><i class="fa-solid fa-ban"></i></button>`;
             let str = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -368,10 +367,10 @@
                         <td class="align-middle text-center "><b>${item.status}</b></td>
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
-                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
-                               New Password
+                            <button type="button" data-id="${item.id}" class="btn btn-warning btnChangePassWord">
+                        <i class="fa-solid fa-key"></i>
                             </button>
-                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
+                            <button class="btn btn-danger btn-updateRemaining" data-id="${item.id}"><i class="fa-solid fa-square-pen"></i></button>
                         </td>
                     </tr>
                     `
@@ -414,8 +413,8 @@
             $("#modalUpdateFullUser").modal("hide");
             user = item;
             let currentRow = $('#tr_' + user.id);
-            let strActive = `<button data-id="${item.id}" style="margin-right: 10px" class="btn btn-outline-success btn-active">Active</button>`;
-            let strBlock = `<button class="btn btn-outline-danger btn-block" data-id="${item.id}">block</button>`;
+            let strActive = `<button data-id="${item.id}" class="btn btn-success btn-active"><i class="fa-solid fa-check"></i></button>`;
+            let strBlock = `<button class="btn btn-danger btn-block-user" data-id="${item.id}"><i class="fa-solid fa-ban"></i></button>`;
             let updateRow = `
                      <tr id="tr_${item.id}">
                         <td class="align-middle text-center "><img src="${item.image}"style="border-radius: 50%" width="80px" alt=""></td>
@@ -425,10 +424,10 @@
                         <td class="align-middle text-center "><b>${item.status}</b></td>
                         <td class="align-middle text-center ">
                             ${item.status === 'Active' ? strBlock : strActive}
-                            <button type="button" data-id="${item.id}" class="btn btn-outline-primary btnChangePassWord">
-                                New Password
+                            <button type="button" data-id="${item.id}" class="btn btn-warning btnChangePassWord">
+                           <i class="fa-solid fa-key"></i>
                             </button>
-                            <button class="btn btn-outline-danger btn-updateRemaining" data-id="${item.id}">Update Remaining</button>
+                            <button class="btn btn-danger btn-updateRemaining" data-id="${item.id}"><i class="fa-solid fa-square-pen"></i></button>
                         </td>
                     </tr>
                     `
@@ -640,7 +639,7 @@
     }
 
     function unBindAll() {
-        $(".btn-block").off();
+        $(".btn-block-user").off();
         $(".btn-active").off();
         $(".btn-updateRemaining").off();
         $(".btnChangePassWord").off();

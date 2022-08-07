@@ -196,6 +196,10 @@
 
     function handlerShowConfirmDelete() {
         $(".btn-delete").on("click", function () {
+            if ($("#ursernameLoFirst").text() !== "admin@gg.cc"){
+                App.IziToast.showErrorAlert("Tài khoản của bạn không đủ thẩm quyền")
+                return;
+            }
             let customerId = $(this).data("id");
             Swal.fire({
                 title: 'Bạn có muốn xóa sản phẩm này không?',
