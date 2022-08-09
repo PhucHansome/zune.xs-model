@@ -462,6 +462,7 @@
             data: JSON.stringify(user)
         }).done(() => {
             App.SweetAlert.showSuccessAlert("Bạn đã đổi mật khẩu thành công!!")
+            $("#modalUpdatePassword").modal("hide");
         }).fail((jqXHR) => {
             $('#modalUpdatePassword .modal-alert-danger').html('').removeClass('hide').addClass('show');
             if (jqXHR.responseJSON) {

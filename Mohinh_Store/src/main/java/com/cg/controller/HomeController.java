@@ -2,7 +2,9 @@ package com.cg.controller;
 
 import com.cg.model.User;
 import com.cg.model.dto.UserDTO;
+import com.cg.service.user.IUserService;
 import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -10,9 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/")
 public class HomeController {
+
+    @Autowired
+    private IUserService userService;
 
     private String getPrincipal() {
         String username;
